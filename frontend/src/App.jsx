@@ -3,6 +3,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Test from "./pages/Test";
 import Welcome from './pages/Welcome';
 import ErrorBoundary from "./ErrorBoundary";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 

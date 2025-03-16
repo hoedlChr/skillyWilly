@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
+import Button from '../components/Button';
 
 function Test(){
     const [testField, setTestField] = useState("");
@@ -43,6 +44,7 @@ function Test(){
                 helptext={"helptext"}
                 changeHandler={setTestField}
             />
+            <Button className="btn-danger" onClick={()=>window.alert("Fuck You")}>hallo</Button>
         </div>
     );
 };
