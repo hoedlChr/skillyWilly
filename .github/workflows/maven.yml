@@ -16,7 +16,7 @@ on:
 
 defaults:
   run:
-    working-directory: dart_project
+    working-directory: backend
 
 jobs:
   build:
