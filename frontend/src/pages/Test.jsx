@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import StandardInputField from '../components/StandardInputField';
 
 function Test(){
+    const [testField, setTestField] = useState("");
     const [users, setUsers] = useState([]);
+
     useEffect(() => {
         fetch('api/users')
             .then(response => response.json())
@@ -22,7 +25,7 @@ function Test(){
                 <tbody>
                     {
                         users.map(user => {
-                            return  <tr>
+                            return  <tr key={user.id}>
                                 <td>{user.id}</td>
                                 <td>{user.name}</td>
                             </tr>
@@ -30,6 +33,16 @@ function Test(){
                     }
                 </tbody>
             </table>
+            <StandardInputField
+                id={"testField"}
+                label={"Label"}
+                className={""}
+                readOnly={false}
+                placeholder={"placeholder..."}
+                value={testField}
+                helptext={"helptext"}
+                changeHandler={setTestField}
+            />
         </div>
     );
 };
