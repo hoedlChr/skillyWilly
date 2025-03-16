@@ -1,4 +1,4 @@
-package org.backend.skillywilly;
+package org.backend.skillywilly.application;
 
 import org.backend.skillywilly.model.User;
 import org.backend.skillywilly.repository.UserRepository;
@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @SpringBootTest
-public class DatabaseConnectionTest {
+public class BackendApplicationTest {
     @Autowired
     private UserRepository userRepository;
 
