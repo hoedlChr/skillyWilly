@@ -26,11 +26,4 @@ public class BackendApplicationTest {
             users.forEach(user -> System.out.println("User: " + user.getId() + ": " + user.getName()));
         }
     }
-
-    @Nested
-    @SpringBootTest(useMainMethod = SpringBootTest.UseMainMethod.ALWAYS)
-    class BackendApplicationMainMethodTest {
-        @Test
-        void main() {}
-    }
 }
