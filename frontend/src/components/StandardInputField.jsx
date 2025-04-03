@@ -14,9 +14,9 @@ function StandardInputField({
 }){
     switch(type){
         default:
-            return (<div className='form-group'>
+            return (<div className='form-group my-2'>
                 <label htmlFor={id}>{label}</label>
-                <InputField id={id} type="text" className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+                <InputField id={id} type={type} className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
                 {
                     helptext != "" ? <small>{helptext}</small> : null
                 }

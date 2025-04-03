@@ -15,7 +15,7 @@ function InputField({
     switch(type){
         default:
             return (
-                <input id={id} type="text" className={"form-control "+className} onChange={myChangeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+                <input id={id} type={type} className={"form-control "+className} onChange={myChangeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
             );
         break;
     }
