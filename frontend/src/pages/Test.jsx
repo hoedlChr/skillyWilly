@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
 import Button from '../components/Button';
+import Map from '../components/Map';
 
 function Test(){
     const [testField, setTestField] = useState("");
     const [users, setUsers] = useState([]);
+    const [html, setHTML] = useState("");
 
     useEffect(() => {
         fetch('api/users')
@@ -45,6 +47,8 @@ function Test(){
                 changeHandler={setTestField}
             />
             <Button className="btn-danger" onClick={()=>window.alert("Fuck You")}>hallo</Button>
+            <StandardInputField type="html" value={html} changeHandler={setHTML}/>
+            <Map markers={[{position: [51.505, -0.09], content: "Hello"}]} center={[51.505, -0.09]}/>
         </div>
     );
 };
