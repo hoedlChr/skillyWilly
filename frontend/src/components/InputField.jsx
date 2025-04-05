@@ -1,5 +1,6 @@
 import React from 'react';
 import FCKEditor from './FCKEditor';
+import SearchPlace from './SearchPlace';
 
 function InputField({
     id,
@@ -14,6 +15,11 @@ function InputField({
         changeHandler(e.target.value)
     }
     switch(type){
+        case "place":
+            return(
+                <SearchPlace value={value} changeHandler={changeHandler}/>
+            );
+        break;
         case "html":
             return (
                 <FCKEditor value={value} changeHandler={changeHandler}/>

@@ -7,6 +7,7 @@ function Test(){
     const [testField, setTestField] = useState("");
     const [users, setUsers] = useState([]);
     const [html, setHTML] = useState("");
+    const [place, setPlace] = useState("");
 
     useEffect(() => {
         fetch('api/users')
@@ -46,6 +47,13 @@ function Test(){
                 helptext={"helptext"}
                 changeHandler={setTestField}
             />
+            {console.log(place)}
+            <StandardInputField
+                id={"place"}
+                label={"Place"}
+                value={place}
+                type="place"
+                changeHandler={setPlace}/>
             <Button className="btn-danger" onClick={()=>window.alert("Fuck You")}>hallo</Button>
             <StandardInputField type="html" value={html} changeHandler={setHTML}/>
             <Map markers={[{position: [51.505, -0.09], content: "Hello"}]} center={[51.505, -0.09]}/>
