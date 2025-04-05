@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import Editor from 'react-simple-wysiwyg';
 
-function FCKEditor() {
-  const [html, setHtml] = useState('');
+function FCKEditor({value, changeHandler}) {
   
   function onChange(e) {
-    setHtml(e.target.value);
+    changeHandler(e.target.value);
   }
 
   return (
-    <Editor value={html} onChange={onChange} />
+    <Editor value={value} onChange={onChange} />
   );
 }
 export default FCKEditor;

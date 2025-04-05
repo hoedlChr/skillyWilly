@@ -13,6 +13,21 @@ function StandardInputField({
     changeHandler = ()=>{}
 }){
     switch(type){
+        case "html":
+            return (<div className='form-group my-2'>
+                <label htmlFor={id}>{label}</label>
+                <InputField id={id} type="html" className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+                </div>);
+        break;
+        case "teaxtarea":
+            return (<div className='form-group my-2'>
+                <label htmlFor={id}>{label}</label>
+                <InputField id={id} type="teaxtarea" className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+                {
+                    helptext != "" ? <small>{helptext}</small> : null
+                }
+                </div>);
+        break;
         default:
             return (<div className='form-group my-2'>
                 <label htmlFor={id}>{label}</label>

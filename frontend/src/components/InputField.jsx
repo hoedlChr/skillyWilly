@@ -1,4 +1,5 @@
 import React from 'react';
+import FCKEditor from './FCKEditor';
 
 function InputField({
     id,
@@ -13,6 +14,15 @@ function InputField({
         changeHandler(e.target.value)
     }
     switch(type){
+        case "html":
+            return (
+                <FCKEditor value={value} changeHandler={changeHandler}/>
+            );
+        break;
+        case "textarea":
+            return (
+                <textarea id={id} className={"form-control "+className} onChange={myChangeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+            );
         default:
             return (
                 <input id={id} type={type} className={"form-control "+className} onChange={myChangeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
