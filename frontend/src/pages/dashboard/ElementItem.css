@@ -1,0 +1,16 @@
+.elementItem{
+    border: 1px solid #ccc;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 5px;
+}
+.elementItem:hover{
+    background-color: #f0f0f0;
+}
+.button{
+    text-align: right;
+
+}
