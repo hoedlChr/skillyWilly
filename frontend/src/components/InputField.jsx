@@ -9,7 +9,8 @@ function InputField({
     placeholder,
     value,
     type="text",
-    changeHandler = ()=>{}
+    changeHandler = ()=>{},
+    onKeyDown = ()=>{},
 }){
     const myChangeHandler = (e) => {
         changeHandler(e.target.value)
@@ -31,7 +32,7 @@ function InputField({
             );
         default:
             return (
-                <input id={id} type={type} className={"form-control "+className} onChange={myChangeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+                <input id={id} type={type} className={"form-control "+className} onChange={myChangeHandler} onKeyDown={onKeyDown} readOnly={readOnly} placeholder={placeholder} value={value}/>
             );
         break;
     }

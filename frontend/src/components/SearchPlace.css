@@ -1,0 +1,9 @@
+.selectElement{
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.selectElement:hover {
+  background-color: #f5f5f5;
+}

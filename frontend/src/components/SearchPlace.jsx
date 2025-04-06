@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Button from './Button';
 import InputField from './InputField';
 
+import './SearchPlace.css';
+
 function SearchPlace({value, changeHandler}) {
     const [searchValue, setSearchValue] = useState(value.display_name);
     const [geoData, setGeoData] = useState([]);
@@ -25,8 +27,13 @@ function SearchPlace({value, changeHandler}) {
             .finally(() => {
                 setLoading(false);
             });
-        };
-    
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            findLocation();
+        }
+    };
 
     return (<>
         <div className='input-group'>
@@ -37,13 +44,28 @@ function SearchPlace({value, changeHandler}) {
                     placeholder={""}
                     value={searchValue}
                     changeHandler={setSearchValue}
+                    onKeyDown={handleKeyDown}
                 />
                 {
                     loading ? <div className='loading'>Loading...</div> : 
                     <Button onClick={findLocation} className='btn-primary'>Search</Button>
                 }
         </div>
-        {JSON.stringify(geoData)}
+        { //TODO:
+            geoData.length > 0 ? <div>
+                    {
+                        geoData.map((item, index) => {
+                            return <div className='clickable selectElement' key={index} onClick={() => {
+                                changeHandler(item);
+                                setSearchValue(item.display_name);
+                                setGeoData([]);
+                            }}>
+                                {item.display_name}
+                            </div>
+                        })
+                    }
+            </div> : null
+        }
     </>
     );
 };
