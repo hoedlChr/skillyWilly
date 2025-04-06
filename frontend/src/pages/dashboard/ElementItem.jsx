@@ -10,17 +10,17 @@ function ElementItem({title, name, ort, id}) {
     },[])
 
 
-    return (<div className='elementItem mb-2 row'>
-            <div className='col name my-2'>
+    return (<div className='elementItem mb-2'>
+            <div className='name my-2'>
                 {name}
             </div>
-            <div className='col ort my-2'>
+            <div className='ort my-2'>
                 {ort}
             </div>
-            <div className='col title my-2'>
+            <div className='title my-2'>
                 {title}
             </div>
-            <div className='col button'>
+            <div className='button'>
                 <Button className='btn-primary' onClick={() => {console.log("Edit", id)}}>Kontaktieren</Button>
             </div>
         </div>
