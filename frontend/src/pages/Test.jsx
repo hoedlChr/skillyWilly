@@ -47,7 +47,6 @@ function Test(){
                 helptext={"helptext"}
                 changeHandler={setTestField}
             />
-            {console.log(place)}
             <StandardInputField
                 id={"place"}
                 label={"Place"}
