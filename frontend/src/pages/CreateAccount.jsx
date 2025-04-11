@@ -128,8 +128,8 @@ function CreateAccount() {
 
             <div className='d-grid'>
                 <Button onClick={() => {console.log("Login clicked")}} className="btn-primary my-2">Create Account</Button>
-                <Button onClick={() => {console.log("Login clicked")}} className="btn-danger my-2">Cancel</Button>
-            </div>
+                <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
+                </div>
         </div>
     );
 }

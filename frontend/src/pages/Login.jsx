@@ -36,8 +36,8 @@ function Login() {
             />
             <div className='d-grid'>
                 <Button onClick={() => {console.log("Login clicked")}} className="btn-primary my-2">Login</Button>
-                <Button onClick={() => {console.log("Login clicked")}} className="btn-danger my-2">Forgot Password</Button>
-                <Button onClick={() => {console.log("Login clicked")}} className="btn-success my-2">Create Account</Button>
+                <a href={'/passwordForgotten'} className="btn btn-danger my-2">Forgot Password</a>
+                <a href={'/createAccount'} className="btn btn-success my-2">Create Account</a>
             </div>
         </div>
     );
