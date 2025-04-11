@@ -10,18 +10,19 @@ function ElementItem({title, name, ort, id}) {
     },[])
 
 
-    return (<div className='elementItem mb-2'>
-            <div className='name my-2'>
+    return (
+        <div className='elementItem clickable mb-2 d-flex align-items-center justify-content-between'>
+            <div className='name mx-2'>
                 {name}
             </div>
-            <div className='ort my-2'>
+            <div className='ort mx-2'>
                 {ort}
             </div>
-            <div className='title my-2'>
+            <div className='title mx-2'>
                 {title}
             </div>
-            <div className='button'>
-                <Button className='btn-primary' onClick={() => {console.log("Edit", id)}}>Kontaktieren</Button>
+            <div className='button mx-2'>
+                <Button className='btn-primary' onClick={() => {console.log("Edit", id)}}>Contact</Button>
             </div>
         </div>
     );

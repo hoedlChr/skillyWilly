@@ -18,18 +18,19 @@ function Dashboard() {
         <div className='container'>
             <h1>Dashboard</h1>
             <div className='row'>
-                <div className='col-2'>
-                    <div className="row">
+                <div className='col-3'>
+                    {/* <div className="row">
                         <Filter />
-                    </div>
+                    </div> */}
                     <div className="row">
                         <ChatList />
                     </div>
                 </div>
-                <div className='col-6' style={{height: "100vh", overflowY: "scroll"}}>
-                    <ElementList/>
+                <div className='col-5' style={{height: "100vh", overflowY: "scroll"}}>
+                        <Filter />
+                        <ElementList/>
                 </div>
-                <div className="col-3">
+                <div className="col-4">
                     <Chat />  
                     <ElementView/>  
                 </div>

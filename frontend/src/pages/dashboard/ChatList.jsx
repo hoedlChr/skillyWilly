@@ -10,11 +10,26 @@ function ChatList() {
 
 
     return (
-        <div>
+        <div style={{height: "60vh",overflowY: "scroll"}}>
             Chats
             <ChatItem name={"Oliver"} chatname={"SkillyWilly"} lastmessage={"test"} time={"12:30"}/>
             <ChatItem name={"Selina"} chatname={"SkillyWilly"} lastmessage={"test"} time={"05.04.2025"}/>
             <ChatItem name={"Nicole"} chatname={"SkillyWilly"} lastmessage={"test"} time={"06.04.2024"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
+            <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
             <ChatItem name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
         </div>
     );
