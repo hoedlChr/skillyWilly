@@ -2,15 +2,50 @@ package org.backend.skillywilly.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
-@Table(name = User.TABLE_NAME)
+@Table(name = "User")
 @Data
 public class User {
-    public static final String TABLE_NAME = "users";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "location")
+    private Map<String, String> location = new HashMap<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<LikeSkill> likeSkills;
+
+    @OneToMany(mappedBy = "user")
+    private List<Skill> skills;
+
+    @OneToMany(mappedBy = "userFollowed")
+    private List<Follower> followers;
+
+    @OneToMany(mappedBy = "userFollower")
+    private List<Follower> following;
+
+    @OneToMany(mappedBy = "userFrom")
+    private List<Message> sentMessages;
+
+    @OneToMany(mappedBy = "userTo")
+    private List<Message> receivedMessages;
 }
