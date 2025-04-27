@@ -22,19 +22,25 @@ public class UserController {
 
     // Endpoint to create a new user
     @PostMapping(value = "/register")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        // Check if the user object is valid
-        if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        try {
+            // Check if the user object is valid
+            if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
+                return new ResponseEntity<>("Invalid input: Username, password, or email is missing.", HttpStatus.BAD_REQUEST);
+            }
+
+            // Hash the password before saving the user
+            String hashedPassword = passwordService.hashPassword(user.getPassword());
+            user.setPassword(hashedPassword);
+
+            // Create the user via the UserService and return the created user
+            User createdUser = userService.createUser(user);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            // Return the exception message in the response
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // Hash the password before saving the user
-        String hashedPassword = passwordService.hashPassword(user.getPassword());
-        user.setPassword(hashedPassword);
-
-        // Create the user via the UserService and return the created user
-        User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     // Endpoint to get all users
