@@ -10,13 +10,31 @@ function CreateAccount() {
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [zip, setZip] = useState("");
+    const [location, setLocation] = useState("");
 
-    useEffect(()=>{
-
-    },[])
+    function sendData(){
+        let data = {
+            username: username,
+            email: email,
+            password: password,
+            // firstname: firstname,
+            // lastname: lastname,
+            location: JSON.stringify(location)
+        }
+        //post data to backend
+        fetch(`/api/users/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+        });
+        
+    }
 
 
     return (
@@ -94,40 +112,16 @@ function CreateAccount() {
                 helptext={""}
                 changeHandler={setPhone}
             />
-            <StandardInputField 
-                label="Address"
-                id={"address"}
-                className={""}
-                readOnly={false}
-                placeholder={""}
-                value={address}
-                helptext={""}
-                changeHandler={setAddress}
-            />
-            <StandardInputField 
-                label="City"
-                id={"city"}
-                className={""}
-                readOnly={false}
-                placeholder={""}
-                value={city}
-                helptext={""}
-                changeHandler={setCity}
-            />
-            <StandardInputField 
-                label="Zip"
-                id={"zip"}
-                className={""}
-                readOnly={false}
-                placeholder={""}
-                value={zip}
-                helptext={""}
-                changeHandler={setZip}
-            />
+            <StandardInputField
+                id={"location"}
+                label={"Location"}
+                value={location}
+                type="place"
+                changeHandler={setLocation}/>
             
 
             <div className='d-grid'>
-                <Button onClick={() => {console.log("Login clicked")}} className="btn-primary my-2">Create Account</Button>
+                <Button onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
                 <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
         </div>
