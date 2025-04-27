@@ -128,7 +128,7 @@ class UserControllerTest {
         when(passwordService.hashPassword("plaintextpassword")).thenReturn("hashedpassword");
         when(userService.createUser(any(User.class))).thenReturn(savedUser);
 
-        ResponseEntity<User> response = userController.createUser(user);
+        ResponseEntity<User> response = (ResponseEntity<User>) userController.createUser(user);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(savedUser, response.getBody());
@@ -140,7 +140,7 @@ class UserControllerTest {
     void testCreateUser_BadRequest() {
         User user = new User(); // Empty user to trigger bad request
 
-        ResponseEntity<User> response = userController.createUser(user);
+        ResponseEntity<User> response = (ResponseEntity<User>) userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         verifyNoInteractions(passwordService);
