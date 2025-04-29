@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
 import Button from '../components/Button';
+import InfoMessage from '../components/InfoMessage';
 
 function CreateAccount() {
     const [username, setUsername] = useState("");
@@ -20,7 +21,12 @@ function CreateAccount() {
             // firstname: firstname,
             // lastname: lastname,
             location: JSON.stringify(location)
+            // location:{
+            //     country:"Germany",
+            //     city: "Berlin",
+            // }
         }
+
         //post data to backend
         fetch(`/api/users/register`, {
             method: "POST",
@@ -102,6 +108,16 @@ function CreateAccount() {
                 helptext={""}
                 changeHandler={setPassword2}
             />
+            {
+                password !== password2 ? 
+                <InfoMessage 
+                    heading="Password mismatch"
+                    body="The passwords do not match. Please try again."
+                    type="danger"
+                    className="my-2"
+                />
+                : null
+            }
             <StandardInputField 
                 label="Phone"
                 id={"phone"}
@@ -121,7 +137,7 @@ function CreateAccount() {
             
 
             <div className='d-grid'>
-                <Button onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
+                <Button disabled={password !== password2} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
                 <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
         </div>
