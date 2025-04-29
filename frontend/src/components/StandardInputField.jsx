@@ -10,42 +10,29 @@ function StandardInputField({
     value,
     helptext = "",
     type="text",
+    required=false,
     changeHandler = ()=>{}
 }){
+    let field = null;
     switch(type){
-        case "place":
-            return (<div className='form-group my-2'>
-                <label htmlFor={id}>{label}</label>
-                <InputField id={id} type="place" className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
-                {
-                    helptext != "" ? <small>{helptext}</small> : null
-                }
-                </div>);
-        case "html":
-            return (<div className='form-group my-2'>
-                <label htmlFor={id}>{label}</label>
-                <InputField id={id} type="html" className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
-                </div>);
-        break;
-        case "teaxtarea":
-            return (<div className='form-group my-2'>
-                <label htmlFor={id}>{label}</label>
-                <InputField id={id} type="teaxtarea" className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
-                {
-                    helptext != "" ? <small>{helptext}</small> : null
-                }
-                </div>);
-        break;
         default:
-            return (<div className='form-group my-2'>
-                <label htmlFor={id}>{label}</label>
-                <InputField id={id} type={type} className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
-                {
-                    helptext != "" ? <small>{helptext}</small> : null
-                }
-                </div>);
+            field = <InputField id={id} type={type} required={required} className={"form-control "+className} changeHandler={changeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>;
         break;
     }
+    return (
+        <div className='form-group my-2'>
+            <label htmlFor={id}>
+                <strong>{label}</strong>
+                {
+                    required === true ? <strong className='text-danger'>*</strong> : null
+                }
+            </label>
+            {field}
+            {
+                helptext != "" ? <small>{helptext}</small> : null
+            }
+        </div>
+    )
 };
 
 export default StandardInputField;

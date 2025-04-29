@@ -9,6 +9,7 @@ function InputField({
     placeholder,
     value,
     type="text",
+    required=false,
     changeHandler = ()=>{},
     onKeyDown = ()=>{},
 }){

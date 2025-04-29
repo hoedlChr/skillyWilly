@@ -74,6 +74,7 @@ function CreateAccount() {
                 placeholder={""}
                 value={email}
                 helptext={""}
+                required={true}
                 changeHandler={setEmail}
             />
             <StandardInputField 
@@ -84,6 +85,7 @@ function CreateAccount() {
                 placeholder={""}
                 value={username}
                 helptext={""}
+                required={true}
                 changeHandler={setUsername}
             />
             <StandardInputField 
@@ -95,6 +97,7 @@ function CreateAccount() {
                 placeholder={""}
                 value={password}
                 helptext={""}
+                required={true}
                 changeHandler={setPassword}
             />
             <StandardInputField 
@@ -106,6 +109,7 @@ function CreateAccount() {
                 placeholder={""}
                 value={password2}
                 helptext={""}
+                required={true}
                 changeHandler={setPassword2}
             />
             {
