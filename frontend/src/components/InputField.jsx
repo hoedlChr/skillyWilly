@@ -12,9 +12,11 @@ function InputField({
     changeHandler = ()=>{},
     onKeyDown = ()=>{},
 }){
+    const [passwordType, setPasswordType] = React.useState(type);
     const myChangeHandler = (e) => {
         changeHandler(e.target.value)
     }
+    
     switch(type){
         case "place":
             return(
@@ -29,6 +31,12 @@ function InputField({
         case "textarea":
             return (
                 <textarea id={id} className={"form-control "+className} onChange={myChangeHandler} readOnly={readOnly} placeholder={placeholder} value={value}/>
+            );
+        case "password":
+            return(<div className="input-group">
+                <input id={id} type={passwordType} className={"form-control "+className} onChange={myChangeHandler} onKeyDown={onKeyDown} readOnly={readOnly} placeholder={placeholder} value={value}/>
+                <button className="btn btn-primary" onClick={() => {setPasswordType(passwordType === "password" ? "text" : "password")}}>{passwordType === "password" ? "Show" : "Hide"}</button>
+            </div>
             );
         default:
             return (
