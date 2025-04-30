@@ -4,141 +4,178 @@ import org.backend.skillywilly.model.Follower;
 import org.backend.skillywilly.service.FollowerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(FollowerController.class)
 class FollowerControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @MockitoBean
+    @Mock
     private FollowerService followerService;
 
-    private Follower testFollower;
+    @InjectMocks
+    private FollowerController followerController;
 
     @BeforeEach
     void setUp() {
-        testFollower = new Follower();
-        testFollower.setId(1L);
-        testFollower.setUserFollowerId(1L);
-        testFollower.setUserFollowedId(2L);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testFollowUserSuccess() throws Exception {
-        when(followerService.followUser(any(Follower.class))).thenReturn(testFollower);
+    void testFollowUser_ValidFollower() {
+        Follower follower = new Follower();
+        follower.setUserFollowedId(1L);
+        follower.setUserFollowerId(2L);
 
-        mockMvc.perform(post("/api/followers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"userFollowerId\":1,\"userFollowedId\":2}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(testFollower.getId()))
-                .andExpect(jsonPath("$.userFollowerId").value(testFollower.getUserFollowerId()))
-                .andExpect(jsonPath("$.userFollowedId").value(testFollower.getUserFollowedId()));
+        when(followerService.followUser(follower)).thenReturn(follower);
+
+        ResponseEntity<?> response = followerController.followUser(follower);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(follower, response.getBody());
+        verify(followerService, times(1)).followUser(follower);
     }
 
     @Test
-    void testFollowUserBadRequest() throws Exception {
-        mockMvc.perform(post("/api/followers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isBadRequest());
+    void testFollowUser_InvalidFollower() {
+        Follower follower = new Follower(); // Missing userFollowedId and userFollowerId
+
+        ResponseEntity<?> response = followerController.followUser(follower);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
+        verifyNoInteractions(followerService);
     }
 
     @Test
-    void testUnfollowUserSuccess() throws Exception {
-        mockMvc.perform(delete("/api/followers")
-                        .param("followerId", "1")
-                        .param("followingId", "2"))
-                .andExpect(status().isNoContent());
+    void testFollowUser_ExceptionThrown() {
+        Follower follower = new Follower();
+        follower.setUserFollowedId(1L);
+        follower.setUserFollowerId(2L);
+
+        when(followerService.followUser(follower)).thenThrow(new RuntimeException("Test exception"));
+
+        ResponseEntity<?> response = followerController.followUser(follower);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        verify(followerService, times(1)).followUser(follower);
     }
 
     @Test
-    void testUnfollowUserBadRequest() throws Exception {
-        mockMvc.perform(delete("/api/followers")
-                        .param("followerId", "")
-                        .param("followingId", ""))
-                .andExpect(status().isBadRequest());
+    void testUnfollowUser_ValidRequest() {
+        Long followerId = 1L;
+        Long followingId = 2L;
+
+        doNothing().when(followerService).unfollowUser(followerId, followingId);
+
+        ResponseEntity<?> response = followerController.unfollowUser(followerId, followingId);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(followerService, times(1)).unfollowUser(followerId, followingId);
     }
 
     @Test
-    void testUnfollowUserInternalServerError() throws Exception {
-        doThrow(new RuntimeException()).when(followerService).unfollowUser(1L, 2L);
+    void testUnfollowUser_InvalidRequest() {
+        Long followerId = null;
+        Long followingId = 2L;
 
-        mockMvc.perform(delete("/api/followers")
-                        .param("followerId", "1")
-                        .param("followingId", "2"))
-                .andExpect(status().isInternalServerError());
+        ResponseEntity<?> response = followerController.unfollowUser(followerId, followingId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verifyNoInteractions(followerService);
     }
 
     @Test
-    void testGetFollowersSuccess() throws Exception {
-        List<Follower> followers = List.of(testFollower);
-        when(followerService.getFollowers(1L)).thenReturn(followers);
+    void testUnfollowUser_ExceptionThrown() {
+        Long followerId = 1L;
+        Long followingId = 2L;
 
-        mockMvc.perform(get("/api/followers/1/followers")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(testFollower.getId()))
-                .andExpect(jsonPath("$[0].userFollowerId").value(testFollower.getUserFollowerId()))
-                .andExpect(jsonPath("$[0].userFollowedId").value(testFollower.getUserFollowedId()));
+        doThrow(new RuntimeException("Test exception")).when(followerService).unfollowUser(followerId, followingId);
+
+        ResponseEntity<?> response = followerController.unfollowUser(followerId, followingId);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        verify(followerService, times(1)).unfollowUser(followerId, followingId);
     }
 
     @Test
-    void testGetFollowersBadRequest() throws Exception {
-        mockMvc.perform(get("/api/followers/null/followers")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+    void testGetFollowers_ValidRequest() {
+        Long userId = 1L;
+        List<Follower> followers = List.of(new Follower(), new Follower());
+
+        when(followerService.getFollowers(userId)).thenReturn(followers);
+
+        ResponseEntity<?> response = followerController.getFollowers(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(followers, response.getBody());
+        verify(followerService, times(1)).getFollowers(userId);
     }
 
     @Test
-    void testGetFollowersInternalServerError() throws Exception {
-        when(followerService.getFollowers(1L)).thenThrow(new RuntimeException());
+    void testGetFollowers_InvalidRequest() {
+        Long userId = null;
 
-        mockMvc.perform(get("/api/followers/1/followers")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+        ResponseEntity<?> response = followerController.getFollowers(userId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
+        verifyNoInteractions(followerService);
     }
 
     @Test
-    void testGetFollowingSuccess() throws Exception {
-        List<Follower> followers = List.of(testFollower);
-        when(followerService.getFollowing(1L)).thenReturn(followers);
+    void testGetFollowers_ExceptionThrown() {
+        Long userId = 1L;
 
-        mockMvc.perform(get("/api/followers/1/following")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(testFollower.getId()))
-                .andExpect(jsonPath("$[0].userFollowerId").value(testFollower.getUserFollowerId()))
-                .andExpect(jsonPath("$[0].userFollowedId").value(testFollower.getUserFollowedId()));
+        when(followerService.getFollowers(userId)).thenThrow(new RuntimeException("Test exception"));
+
+        ResponseEntity<?> response = followerController.getFollowers(userId);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        verify(followerService, times(1)).getFollowers(userId);
     }
 
     @Test
-    void testGetFollowingBadRequest() throws Exception {
-        mockMvc.perform(get("/api/followers/null/following")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+    void testGetFollowing_ValidRequest() {
+        Long userId = 1L;
+        List<Follower> following = List.of(new Follower(), new Follower());
+
+        when(followerService.getFollowing(userId)).thenReturn(following);
+
+        ResponseEntity<?> response = followerController.getFollowing(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(following, response.getBody());
+        verify(followerService, times(1)).getFollowing(userId);
     }
 
     @Test
-    void testGetFollowingInternalServerError() throws Exception {
-        when(followerService.getFollowing(1L)).thenThrow(new RuntimeException());
+    void testGetFollowing_InvalidRequest() {
+        Long userId = null;
 
-        mockMvc.perform(get("/api/followers/1/following")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+        ResponseEntity<?> response = followerController.getFollowing(userId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
+        verifyNoInteractions(followerService);
+    }
+
+    @Test
+    void testGetFollowing_ExceptionThrown() {
+        Long userId = 1L;
+
+        when(followerService.getFollowing(userId)).thenThrow(new RuntimeException("Test exception"));
+
+        ResponseEntity<?> response = followerController.getFollowing(userId);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        verify(followerService, times(1)).getFollowing(userId);
     }
 }

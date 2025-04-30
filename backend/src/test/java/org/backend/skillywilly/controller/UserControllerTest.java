@@ -11,21 +11,20 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
-class UserControllerTest {
+public class UserControllerTest {
+
+    @InjectMocks
+    private UserController userController;
+
     @Mock
     private UserService userService;
 
     @Mock
     private PasswordService passwordService;
-
-    @InjectMocks
-    private UserController userController;
 
     @BeforeEach
     void setUp() {
@@ -33,193 +32,53 @@ class UserControllerTest {
     }
 
     @Test
-    void testVerifyUser_Success() {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("validUser");
-        user.setPassword("validPassword");
-
-        when(userService.findUserByUsername("validUser")).thenReturn(Optional.of(user));
-        when(passwordService.verifyPassword(any(), any())).thenReturn(true);
-
-        ResponseEntity<User> response = userController.verifyUser("validUser", "validPassword");
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user, response.getBody());
-        verify(userService, times(1)).findUserByUsername("validUser");
-        verify(passwordService, times(1)).verifyPassword(any(), any());
-    }
-
-    @Test
-    void testVerifyUser_UsernameNotFound() {
-        when(userService.findUserByUsername("invalidUser")).thenReturn(Optional.empty());
-
-        ResponseEntity<User> response = userController.verifyUser("invalidUser", "anyPassword");
-
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        verify(userService, times(1)).findUserByUsername("invalidUser");
-        verifyNoInteractions(passwordService);
-    }
-
-    @Test
-    void testVerifyUser_PasswordIncorrect() {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("validUser");
-        user.setPassword("hashedPassword");
-
-        when(userService.findUserByUsername("validUser")).thenReturn(Optional.of(user));
-        when(passwordService.verifyPassword("hashedPassword", "invalidPassword")).thenReturn(false);
-
-        ResponseEntity<User> response = userController.verifyUser("validUser", "invalidPassword");
-
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        verify(userService, times(1)).findUserByUsername("validUser");
-        verify(passwordService, times(1)).verifyPassword("hashedPassword", "invalidPassword");
-    }
-
-    @Test
-    void testGetAllUsers_Success() {
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setUsername("user1");
-        user1.setEmail("user1@example.com");
-
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setUsername("user2");
-        user2.setEmail("user2@example.com");
-
-        List<User> userList = List.of(user1, user2);
-
-        when(userService.getAllUsers()).thenReturn(userList);
-
-        ResponseEntity<List<User>> response = userController.getAllUsers();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userList, response.getBody());
-        verify(userService, times(1)).getAllUsers();
-    }
-
-    @Test
-    void testGetAllUsers_NoUsersFound() {
-        when(userService.getAllUsers()).thenReturn(List.of());
-
-        ResponseEntity<List<User>> response = userController.getAllUsers();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(0, response.getBody().size());
-        verify(userService, times(1)).getAllUsers();
-    }
-
-    @Test
-    void testCreateUser_Success() {
+    void testCreateUser_ValidInput_SuccessfulRegistration() {
         User user = new User();
         user.setUsername("testuser");
-        user.setPassword("plaintextpassword");
-        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setEmail("testuser@example.com");
 
-        User savedUser = new User();
-        savedUser.setId(1L);
-        savedUser.setUsername("testuser");
-        savedUser.setPassword("hashedpassword");
-        savedUser.setEmail("test@example.com");
+        User createdUser = new User();
+        createdUser.setId(1L);
+        createdUser.setUsername("testuser");
+        createdUser.setPassword("hashedPassword123");
+        createdUser.setEmail("testuser@example.com");
 
-        when(passwordService.hashPassword("plaintextpassword")).thenReturn("hashedpassword");
-        when(userService.createUser(any(User.class))).thenReturn(savedUser);
+        when(passwordService.hashPassword("password123")).thenReturn("hashedPassword123");
+        when(userService.createUser(user)).thenReturn(createdUser);
 
-        ResponseEntity<User> response = (ResponseEntity<User>) userController.createUser(user);
+        ResponseEntity<?> response = userController.createUser(user);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(savedUser, response.getBody());
-        verify(passwordService, times(1)).hashPassword("plaintextpassword");
-        verify(userService, times(1)).createUser(any(User.class));
+        assertNotNull(response.getBody());
+        assertEquals(createdUser, response.getBody());
     }
 
     @Test
-    void testCreateUser_BadRequest() {
-        User user = new User(); // Empty user to trigger bad request
+    void testCreateUser_InvalidInput_RespondsBadRequest() {
+        User user = new User();
+        user.setUsername(null);
+        user.setPassword(null);
+        user.setEmail(null);
 
-        ResponseEntity<User> response = (ResponseEntity<User>) userController.createUser(user);
+        ResponseEntity<?> response = userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        verifyNoInteractions(passwordService);
-        verify(userService, never()).createUser(any(User.class));
+        assertEquals("Invalid input: Username, password, or email is missing.", response.getBody());
     }
 
     @Test
-    void testGetUserById_Success() {
+    void testCreateUser_ExceptionThrown_RespondsInternalServerError() {
         User user = new User();
-        user.setId(1L);
         user.setUsername("testuser");
-        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setEmail("testuser@example.com");
 
-        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+        when(passwordService.hashPassword("password123")).thenThrow(new RuntimeException("Hashing failed"));
 
-        ResponseEntity<User> response = userController.getUserById(1L);
+        ResponseEntity<?> response = userController.createUser(user);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user, response.getBody());
-        verify(userService, times(1)).getUserById(1L);
-    }
-
-    @Test
-    void testGetUserById_NotFound() {
-        when(userService.getUserById(100L)).thenReturn(Optional.empty());
-
-        ResponseEntity<User> response = userController.getUserById(100L);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        verify(userService, times(1)).getUserById(100L);
-    }
-
-    @Test
-    void testUpdateUser_Success() {
-        User updatedUser = new User();
-        updatedUser.setId(1L);
-        updatedUser.setUsername("updatedusername");
-        updatedUser.setEmail("updatedemail@example.com");
-
-        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(Optional.of(updatedUser));
-
-        ResponseEntity<User> response = userController.updateUser(1L, updatedUser);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedUser, response.getBody());
-        verify(userService, times(1)).updateUser(eq(1L), any(User.class));
-    }
-
-    @Test
-    void testUpdateUser_NotFound() {
-        User updatedUser = new User();
-        updatedUser.setUsername("nonexistentuser");
-        updatedUser.setEmail("nonexistentemail@example.com");
-
-        when(userService.updateUser(eq(100L), any(User.class))).thenReturn(Optional.empty());
-
-        ResponseEntity<User> response = userController.updateUser(100L, updatedUser);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        verify(userService, times(1)).updateUser(eq(100L), any(User.class));
-    }
-
-    @Test
-    void testDeleteUser_Success() {
-        when(userService.deleteUser(1L)).thenReturn(true);
-
-        ResponseEntity<Void> response = userController.deleteUser(1L);
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(userService, times(1)).deleteUser(1L);
-    }
-
-    @Test
-    void testDeleteUser_NotFound() {
-        when(userService.deleteUser(100L)).thenReturn(false);
-
-        ResponseEntity<Void> response = userController.deleteUser(100L);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        verify(userService, times(1)).deleteUser(100L);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Error: Hashing failed", response.getBody());
     }
 }

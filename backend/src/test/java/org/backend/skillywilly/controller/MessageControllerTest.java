@@ -1,4 +1,4 @@
 package org.backend.skillywilly.controller;
 
-public class SkillControllerTest {
+public class MessageControllerTest {
 }

@@ -12,10 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SkillService {
     private final SkillRepository skillRepository;
-
-    /**
-     * Creates a new skill.
-     */
+    
     public Skill createSkill(Skill skill) {
         if (skill == null) {
             return null;
@@ -23,23 +20,14 @@ public class SkillService {
         return skillRepository.save(skill);
     }
 
-    /**
-     * Retrieves a skill by its ID.
-     */
     public Skill getSkillById(Long id) {
         return skillRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Retrieves all skills.
-     */
     public List<Skill> getAllSkills() {
         return skillRepository.findAll();
     }
 
-    /**
-     * Updates an existing skill.
-     */
     public Skill updateSkill(Long id, Skill skillDetails) {
         if (skillDetails == null) {
             return null;
@@ -56,15 +44,11 @@ public class SkillService {
         return skillRepository.save(existingSkill);
     }
 
-    // Helper method to update fields of the Skill
     private void updateSkillFields(Skill existingSkill, Skill skillDetails) {
         existingSkill.setSubject(skillDetails.getSubject());
         existingSkill.setBody(skillDetails.getBody());
     }
 
-    /**
-     * Deletes a skill by its ID.
-     */
     public boolean deleteSkill(Long id) {
         if (!skillRepository.existsById(id)) {
             return false;
