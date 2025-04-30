@@ -5,9 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "User")
@@ -28,8 +26,8 @@ public class User {
     private String password;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "location")
-    private Map<String, String> location = new HashMap<>();
+    @Column(name = "location", columnDefinition = "json")
+    private List<Location> location;
 
     @OneToMany(mappedBy = "user")
     private List<LikeSkill> likeSkills;
