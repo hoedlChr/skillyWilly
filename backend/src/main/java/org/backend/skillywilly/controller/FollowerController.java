@@ -7,8 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static org.backend.skillywilly.util.GeneralHelper.createExceptionResponse;
+import static org.backend.skillywilly.util.GeneralHelper.createOkResponse;
 
+/**
+ * Controller for managing follower and following relationships between users.
+ * Handles HTTP requests related to following/unfollowing users and retrieving followers/followings.
+ */
 @RestController
 @RequestMapping(FollowerController.API_BASE_PATH)
 public class FollowerController {
@@ -17,7 +22,7 @@ public class FollowerController {
 
     @Autowired
     private FollowerService followerService;
-    
+
     /**
      * Follow a user.
      *
@@ -25,15 +30,14 @@ public class FollowerController {
      * @return Created follower relationship or Bad Request if input is invalid.
      */
     @PostMapping
-    public ResponseEntity<Follower> followUser(@RequestBody Follower follower) {
+    public ResponseEntity<?> followUser(@RequestBody Follower follower) {
         if (follower == null || follower.getUserFollowedId() == null || follower.getUserFollowerId() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         try {
-            Follower createdFollower = followerService.followUser(follower);
-            return createOkResponse(createdFollower);
+            return createOkResponse(followerService.followUser(follower));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return createExceptionResponse(e);
         }
     }
 
@@ -45,7 +49,7 @@ public class FollowerController {
      * @return No content if successful, or Bad Request if input is invalid.
      */
     @DeleteMapping
-    public ResponseEntity<Void> unfollowUser(
+    public ResponseEntity<?> unfollowUser(
             @RequestParam(name = "followerId") Long followerId,
             @RequestParam(name = "followingId") Long followingId) {
         if (followerId == null || followingId == null) {
@@ -55,7 +59,7 @@ public class FollowerController {
             followerService.unfollowUser(followerId, followingId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return createExceptionResponse(e);
         }
     }
 
@@ -66,14 +70,14 @@ public class FollowerController {
      * @return List of followers as response or Bad Request if input is invalid.
      */
     @GetMapping("/{userId}/followers")
-    public ResponseEntity<List<Follower>> getFollowers(@PathVariable(name = "userId") Long userId) {
+    public ResponseEntity<?> getFollowers(@PathVariable(name = "userId") Long userId) {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         try {
             return createOkResponse(followerService.getFollowers(userId));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return createExceptionResponse(e);
         }
     }
 
@@ -84,19 +88,14 @@ public class FollowerController {
      * @return List of followings as response or Bad Request if input is invalid.
      */
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<Follower>> getFollowing(@PathVariable(name = "userId") Long userId) {
+    public ResponseEntity<?> getFollowing(@PathVariable(name = "userId") Long userId) {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         try {
             return createOkResponse(followerService.getFollowing(userId));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return createExceptionResponse(e);
         }
-    }
-
-    // Utility method to build OK Response
-    private <T> ResponseEntity<T> createOkResponse(T body) {
-        return ResponseEntity.ok(body);
     }
 }
