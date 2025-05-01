@@ -170,4 +170,24 @@ public class UserController {
             return createExceptionResponse(e);
         }
     }
+
+    /**
+     * Retrieves a list of all usernames.
+     *
+     * @return a ResponseEntity containing a list of usernames with an HTTP status of 200 (OK).
+     * In the event of an error, returns an appropriate error response.
+     */
+    @GetMapping("/usernames")
+    public ResponseEntity<?> getAllUsernames() {
+        try {
+            List<String> usernames = userService.getAllUsers()
+                    .stream()
+                    .map(User::getUsername)
+                    .toList();
+            return new ResponseEntity<>(usernames, HttpStatus.OK);
+        } catch (Exception e) {
+            return createExceptionResponse(e);
+        }
+    }
+
 }
