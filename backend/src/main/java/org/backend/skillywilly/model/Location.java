@@ -167,6 +167,6 @@ public class Location {
          * - The ordering of coordinates follows the GeoJSON specification, where each pair is defined as [longitude, latitude].
          * - This variable is commonly used for representing spatial data in applications that handle geospatial information.
          */
-        private List<List<List<Double>>> coordinates;
+        private Object coordinates;
     }
 }
