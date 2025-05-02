@@ -13,6 +13,27 @@ function CreateSkill({ show, setShow }) {
 	};
 
 	const create = () => {
+		let data = {
+			subject: title,
+			body: description,
+			userId: 29,
+		};
+
+		fetch(`/api/skills`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+				cancel();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	return (
@@ -31,7 +52,7 @@ function CreateSkill({ show, setShow }) {
 				value={title}
 				changeHandler={setTitle}
 			/>
-			<StandardInputField
+			{/* <StandardInputField
 				id={"location"}
 				label={"Location"}
 				className={""}
@@ -39,7 +60,7 @@ function CreateSkill({ show, setShow }) {
 				readOnly={false}
 				value={location}
 				changeHandler={setLocation}
-			/>
+			/> */}
 			<StandardInputField
 				id={"description"}
 				label={"Description"}
