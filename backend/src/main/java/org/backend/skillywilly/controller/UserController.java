@@ -149,6 +149,7 @@ public class UserController {
      * returns HTTP status 401 if the credentials are invalid;
      * returns an appropriate error response if an exception occurs.
      */
+    @CrossOrigin
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@RequestParam("username") String username,
                                         @RequestParam("password") String password) {

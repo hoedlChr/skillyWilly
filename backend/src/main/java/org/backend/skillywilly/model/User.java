@@ -67,12 +67,12 @@ public class User {
     private String password;
 
     /**
-     * Represents a list of location details associated with the user.
+     * Represents a location details associated with the user.
      * The data is stored in the database using the JSON type.
      */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "location", columnDefinition = "json")
-    private List<Location> location;
+    private Location location;
 
     /**
      * Represents a list of LikeSkill entities associated with a User.
