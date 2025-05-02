@@ -13,7 +13,7 @@ function CreateAccount() {
     const [phone, setPhone] = useState("");
     const [location, setLocation] = useState("");
 
-    function sendData(){
+    function sendData({setIsLoading}){
         let data = {
             username: username,
             email: email,
@@ -28,6 +28,7 @@ function CreateAccount() {
         }
 
         //post data to backend
+        setIsLoading(true);
         fetch(`/api/users/register`, {
             method: "POST",
             headers: {
@@ -38,6 +39,8 @@ function CreateAccount() {
         .then(res => res.json())
         .then(data => {
             console.log(data);
+        }).finally(() => {
+            setIsLoading(false);
         });
         
     }

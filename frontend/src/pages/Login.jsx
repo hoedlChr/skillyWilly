@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
 import Button from '../components/Button';
 
-function Login() {
+function Login({setUser}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    useEffect(()=>{
-
-    },[])
+    const handleLogin = () => {
+        // Perform login logic here
+        console.log("Login clicked");
+        // naviagte to dashboard
+        window.location.href = "/Dashboard";
+        localStorage.setItem("user", JSON.stringify({username: username, password: password}));
+    }
 
 
     return (
@@ -27,6 +31,7 @@ function Login() {
             <StandardInputField 
                 label="Password"
                 id={"password"}
+                type={"password"}
                 className={""}
                 readOnly={false}
                 placeholder={""}
@@ -35,7 +40,7 @@ function Login() {
                 changeHandler={setPassword}
             />
             <div className='d-grid'>
-                <Button onClick={() => {console.log("Login clicked")}} className="btn-primary my-2">Login</Button>
+                <Button onClick={() => {handleLogin()}} className="btn-primary my-2">Login</Button>
                 <a href={'/passwordForgotten'} className="btn btn-danger my-2">Forgot Password</a>
                 <a href={'/createAccount'} className="btn btn-success my-2">Create Account</a>
             </div>
