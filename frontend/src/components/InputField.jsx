@@ -36,7 +36,7 @@ function InputField({
         case "password":
             return(<div className="input-group">
                 <input id={id} type={passwordType} className={"form-control "+className} onChange={myChangeHandler} onKeyDown={onKeyDown} readOnly={readOnly} placeholder={placeholder} value={value}/>
-                <button className="btn btn-primary" onClick={() => {setPasswordType(passwordType === "password" ? "text" : "password")}}>{passwordType === "password" ? "Show" : "Hide"}</button>
+                <button className="btn btn-primary" disabled={readOnly}  onClick={() => {setPasswordType(passwordType === "password" ? "text" : "password")}}>{passwordType === "password" ? "Show" : "Hide"}</button>
             </div>
             );
         default:
