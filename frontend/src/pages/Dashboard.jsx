@@ -7,8 +7,10 @@ import ElementList from './dashboard/ElementList';
 import Filter from './dashboard/Filter';
 import ElementView from './dashboard/ElementView';
 
-function Dashboard() {
-
+function Dashboard({user, setUser}) {
+    const [showChat, setShowChat] = useState(false);
+    const [showElement, setShowElement] = useState(false);
+    const height = 95;
     useEffect(()=>{
 
     },[])
@@ -18,22 +20,30 @@ function Dashboard() {
         <div className='container'>
             <h1>Dashboard</h1>
             <div className='row'>
-                <div className='col-3'>
+                <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
                     {/* <div className="row">
                         <Filter />
                     </div> */}
                     <div className="row">
-                        <ChatList />
+                        <ChatList setShowChat={setShowChat} setShowElement={setShowElement}/>
                     </div>
                 </div>
-                <div className='col-5' style={{height: "100vh", overflowY: "scroll"}}>
-                        <Filter />
-                        <ElementList/>
+                <div className='col-5 overflow-auto' style={{height: `${height}vh`}}>
+                        <ElementList setShowChat={setShowChat} setShowElement={setShowElement}/>
                 </div>
-                <div className="col-4">
-                    <Chat />  
-                    <ElementView/>  
-                </div>
+                {
+                    showChat === false && showElement === false ? null:
+                    <div className="col-4" style={{height: `${height}vh`}}>
+                        {
+                            showChat ?
+                            <Chat/>:null
+                        }
+                        {
+                            showElement ?
+                            <ElementView/> :null
+                        }
+                    </div>
+                }
             </div>
         </div>
     );

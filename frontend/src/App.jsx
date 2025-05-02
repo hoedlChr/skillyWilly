@@ -26,18 +26,12 @@ function App() {
       // if session is not valid, set user to null
       setIsLoading(true);
       console.log("Checking session...");
-      // setIsLoading(false)
+      setIsLoading(false)
     }
   }, []);
 
   if(isLoading){
-    return (
-      <div className="d-flex text-center mt-5 align-items-center justify-content-center">
-      <div style={{ width: "50%" }}>
-        <LoadingBar />
-      </div>
-      </div>
-    )
+    return (<LoadingBar />)
   }
   
   return (
