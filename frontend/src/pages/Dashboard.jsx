@@ -42,7 +42,7 @@ function Dashboard({user, setUser}) {
                     <div className="col-4" style={{height: `${height}vh`}}>
                         {
                             showChat ?
-                            <Chat/>:null
+                            <Chat style={{height: `${height}vh`}}/>:null
                         }
                         {
                             showElement ?
