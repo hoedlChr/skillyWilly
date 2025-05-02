@@ -13,6 +13,25 @@ function CreateAccount() {
     const [phone, setPhone] = useState("");
     const [location, setLocation] = useState("");
 
+    const [usedUsername, setUsedUsername] = useState([]);
+    useEffect(() => {
+        fetch(`/api/users/usernames`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        )
+        .then(res => res.json())
+        .then(data => {
+            setUsedUsername(data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }, []);
+
     function sendData({setIsLoading}){
         let data = {
             username: username,
@@ -91,6 +110,16 @@ function CreateAccount() {
                 required={true}
                 changeHandler={setUsername}
             />
+            {
+                usedUsername.includes(username) ? 
+                <InfoMessage 
+                    heading="Username already taken"
+                    body="The username is already taken. Please try again."
+                    type="danger"
+                    className="my-2"
+                />
+                : null
+            }
             <StandardInputField 
                 label="Password"
                 id={"password"}
@@ -144,7 +173,7 @@ function CreateAccount() {
             
 
             <div className='d-grid'>
-                <Button disabled={password !== password2} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
+                <Button disabled={password !== password2 || usedUsername.includes(username)} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
                 <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
         </div>
