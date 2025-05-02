@@ -26,7 +26,7 @@ function Dashboard({user, setUser}) {
     return (<>
         <CreateSkill show={showCreateSkill} setShow={setShowCreateSkill}/>
         <SkillOnMap show={showElementsOnMap} setShow={setShowElementsOnMap}/>
-        <div className='container'>
+        <div className='container overflow-hidden'>
             <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
             <div className='row'>
                 <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
