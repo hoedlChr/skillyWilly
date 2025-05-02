@@ -15,13 +15,12 @@ function Dashboard({user, setUser}) {
     const [showElement, setShowElement] = useState(false);
     const [showCreateSkill, setShowCreateSkill] = useState(false);
     const [showElementsOnMap, setShowElementsOnMap] = useState(false);
-    const [showUserContextMenu, setShowUserContextMenu] = useState(false);
+    const [chatList, setChatList] = useState([1]);
 
     const height = 90;
     useEffect(()=>{
 
     },[])
-
 
     return (<>
         <CreateSkill show={showCreateSkill} setShow={setShowCreateSkill}/>
@@ -29,12 +28,15 @@ function Dashboard({user, setUser}) {
         <div className='container overflow-hidden'>
             <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
             <div className='row'>
-                <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
-                    <div className="row">
-                        <ChatList setShowChat={setShowChat} setShowElement={setShowElement}/>
-                    </div>
-                </div>
-                <div className='col-5 overflow-auto' style={{height: `${height}vh`}}>
+                {
+                    chatList.length > 0 ?
+                    <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
+                        <div className="row">
+                            <ChatList setShowChat={setShowChat} setShowElement={setShowElement}/>
+                        </div>
+                    </div>:null
+                }
+                <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
                         <ElementList setShowChat={setShowChat} setShowElement={setShowElement}/>
                 </div>
                 {
