@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import './ElementItem.css';
 import Button from '../../components/Button';
 
-function ElementItem({setShowChat, setShowElement, title, name, ort, id}) {
+function ElementItem({mySkilly=false,setShowChat, setShowElement, title, name, ort, id}) {
 
-    const clickButton = (e) => {
+    const clickChat = (e) => {
         e.stopPropagation();
         setShowChat(true);
         setShowElement(false);
@@ -15,6 +15,11 @@ function ElementItem({setShowChat, setShowElement, title, name, ort, id}) {
         e.stopPropagation();
         setShowElement(true);
         setShowChat(false);
+    }
+
+    const deleteItem = (e) => {
+        e.stopPropagation();
+        console.log("delete item");
     }
 
     return (
@@ -29,7 +34,11 @@ function ElementItem({setShowChat, setShowElement, title, name, ort, id}) {
                         {title}
                     </td>
                     <td className='button'>
-                        <Button className='btn-primary' onClick={clickButton}>Contact</Button>
+                        {
+                            mySkilly ? 
+                            <Button className='btn-danger' onClick={deleteItem}>delete</Button>:
+                            <Button className='btn-primary' onClick={clickChat}>Contact</Button>
+                        }
                     </td>
                 </tr>
             </tbody>

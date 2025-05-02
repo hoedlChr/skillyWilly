@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
 import Button from '../components/Button';
 import InfoMessage from '../components/InfoMessage';
+import Navbar from './dashboard/Navbar';
 
 function UserSettings() {
     const [username, setUsername] = useState("");
@@ -47,8 +48,8 @@ function UserSettings() {
 
 
     return (
-        <div className='w-50 m-auto mt-5'>
-            <h1>User Account</h1>
+        <div className='container'>
+            <Navbar text="User Settings" />
             <StandardInputField 
                 label="Firstname"
                 id={"firstname"}

@@ -11,11 +11,13 @@ import Dashboard from './pages/Dashboard';
 import './App.css';
 import PasswordForgotten from './pages/PasswordForgotten';
 import LoadingBar from './components/LoadingBar';
+import UserSettings from './pages/UserSettings';
+import MySkilly from './pages/MySkilly';
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null);
   const [session, setSession] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ function App() {
       console.log("Checking session...");
       setIsLoading(false)
     }
-  }, []);
+  }, [user, session]);
 
   if(isLoading){
     return (<LoadingBar />)
@@ -43,6 +45,8 @@ function App() {
             <>
               <Route path="test" element={<Test />} />
               <Route path="Dashboard" element={<Dashboard user={user} />} />
+              <Route path="UserSettings" element={<UserSettings user={user} />} />
+              <Route path="MySkilly" element={<MySkilly user={user} />} />
               <Route path="*" element={<div className='text-center mt-5'><img style={{width: "250px"}} src="./404.png" /></div>} />
             </>
           ) : (

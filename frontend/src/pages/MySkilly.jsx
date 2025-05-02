@@ -10,12 +10,11 @@ import CreateSkill from './dashboard/CreateSkill';
 import SkillOnMap from './dashboard/SkillOnMap';
 import Navbar from './dashboard/Navbar';
 
-function Dashboard({user, setUser}) {
+function MySkilly({user, setUser}) {
     const [showChat, setShowChat] = useState(false);
     const [showElement, setShowElement] = useState(false);
     const [showCreateSkill, setShowCreateSkill] = useState(false);
     const [showElementsOnMap, setShowElementsOnMap] = useState(false);
-    const [showUserContextMenu, setShowUserContextMenu] = useState(false);
 
     const height = 90;
     useEffect(()=>{
@@ -27,23 +26,14 @@ function Dashboard({user, setUser}) {
         <CreateSkill show={showCreateSkill} setShow={setShowCreateSkill}/>
         <SkillOnMap show={showElementsOnMap} setShow={setShowElementsOnMap}/>
         <div className='container'>
-            <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
+            <Navbar text="MySkilly" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
             <div className='row'>
-                <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
-                    <div className="row">
-                        <ChatList setShowChat={setShowChat} setShowElement={setShowElement}/>
-                    </div>
-                </div>
                 <div className='col-5 overflow-auto' style={{height: `${height}vh`}}>
-                        <ElementList setShowChat={setShowChat} setShowElement={setShowElement}/>
+                        <ElementList mySkilly={true} setShowChat={setShowChat} setShowElement={setShowElement}/>
                 </div>
                 {
-                    showChat === false && showElement === false ? null:
+                    showElement === false ? null:
                     <div className="col-4" style={{height: `${height}vh`}}>
-                        {
-                            showChat ?
-                            <Chat/>:null
-                        }
                         {
                             showElement ?
                             <ElementView/> :null
@@ -55,4 +45,4 @@ function Dashboard({user, setUser}) {
     </>);
 }
 
-export default Dashboard;
+export default MySkilly;
