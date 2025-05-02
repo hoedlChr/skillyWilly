@@ -6,19 +6,34 @@ import ChatList from './dashboard/ChatList';
 import ElementList from './dashboard/ElementList';
 import Filter from './dashboard/Filter';
 import ElementView from './dashboard/ElementView';
+import CreateSkill from './dashboard/CreateSkill';
 
 function Dashboard({user, setUser}) {
     const [showChat, setShowChat] = useState(false);
     const [showElement, setShowElement] = useState(false);
-    const height = 95;
+    const [createSkill, setCreateSkill] = useState(false);
+    const height = 90;
     useEffect(()=>{
 
     },[])
 
 
-    return (
+    return (<>
+        <CreateSkill show={createSkill} setShow={setCreateSkill}/>
         <div className='container'>
-            <h1>Dashboard</h1>
+            <div className='row my-2'>
+                <div className="col">
+                    <h2>Dashboard</h2>
+                </div>
+                <div className="col-3 text-end">
+                    <Button className='btn-primary' onClick={() => {
+                        setCreateSkill(true);
+                    }}>New Skill</Button>
+                    <Button className='btn-danger' onClick={() => {
+                        localStorage.removeItem("user");
+                    }}>Logout</Button>
+                </div>
+            </div>
             <div className='row'>
                 <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
                     {/* <div className="row">
@@ -46,7 +61,7 @@ function Dashboard({user, setUser}) {
                 }
             </div>
         </div>
-    );
+    </>);
 }
 
 export default Dashboard;
