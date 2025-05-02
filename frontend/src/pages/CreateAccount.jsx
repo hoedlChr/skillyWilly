@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
 import Button from '../components/Button';
 import InfoMessage from '../components/InfoMessage';
+import LoadingBar from '../components/LoadingBar';
 
 function CreateAccount() {
+    const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
@@ -32,18 +34,19 @@ function CreateAccount() {
         });
     }, []);
 
-    function sendData({setIsLoading}){
+    function sendData(){
         let data = {
             username: username,
             email: email,
             password: password,
-            // firstname: firstname,
-            // lastname: lastname,
-            location: JSON.stringify(location)
-            // location:{
-            //     country:"Germany",
-            //     city: "Berlin",
+            firstname: firstname,
+            lastname: lastname,
+            // location: {
+            //     display_name: location.display_name,
+            //     lat: location.lat,
+            //     lon: location.lon,
             // }
+            location: location
         }
 
         //post data to backend
@@ -171,10 +174,13 @@ function CreateAccount() {
                 type="place"
                 changeHandler={setLocation}/>
             
-
-            <div className='d-grid'>
-                <Button disabled={password !== password2 || usedUsername.includes(username)} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
-                <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
+                <div className='d-grid'>
+                {
+                    isLoading ? 
+                    <LoadingBar /> :
+                    <Button disabled={password !== password2 || usedUsername.includes(username)} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
+                }  
+                    <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
         </div>
     );
