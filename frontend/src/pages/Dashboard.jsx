@@ -7,11 +7,13 @@ import ElementList from './dashboard/ElementList';
 import Filter from './dashboard/Filter';
 import ElementView from './dashboard/ElementView';
 import CreateSkill from './dashboard/CreateSkill';
+import SkillOnMap from './dashboard/SkillOnMap';
 
 function Dashboard({user, setUser}) {
     const [showChat, setShowChat] = useState(false);
     const [showElement, setShowElement] = useState(false);
     const [createSkill, setCreateSkill] = useState(false);
+    const [showElementsOnMap, setShowElementsOnMap] = useState(false);
     const height = 90;
     useEffect(()=>{
 
@@ -20,18 +22,25 @@ function Dashboard({user, setUser}) {
 
     return (<>
         <CreateSkill show={createSkill} setShow={setCreateSkill}/>
+        <SkillOnMap show={showElementsOnMap} setShow={setShowElementsOnMap}/>
         <div className='container'>
             <div className='row my-2'>
                 <div className="col">
                     <h2>Dashboard</h2>
                 </div>
-                <div className="col-3 text-end">
-                    <Button className='btn-primary' onClick={() => {
-                        setCreateSkill(true);
-                    }}>New Skill</Button>
-                    <h2 className='mx-2 d-inline' style={{cursor: "pointer"}} onClick={() => {}}>
-                        <i className="bi bi-person-circle"></i>
-                    </h2>
+                <div className="col-4 text-end">
+                    <div className="d-flex align-items-center gap-2">
+                        <Button className='btn-primary' onClick={() => {
+                            setShowElementsOnMap(true);
+                        }}>show Skilly on Map</Button>
+                        <Button className='btn-primary' onClick={() => {
+                            setCreateSkill(true);
+                        }}>New Skill</Button>
+                        <h2 className='mx-2 d-inline' style={{cursor: "pointer"}} onClick={() => {}}>
+                            <i className="bi bi-person-circle"></i>
+                        </h2>
+                    </div>
+
                 </div>
             </div>
             <div className='row'>
