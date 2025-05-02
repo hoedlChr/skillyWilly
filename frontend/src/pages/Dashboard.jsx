@@ -29,9 +29,9 @@ function Dashboard({user, setUser}) {
                     <Button className='btn-primary' onClick={() => {
                         setCreateSkill(true);
                     }}>New Skill</Button>
-                    <Button className='btn-danger' onClick={() => {
-                        localStorage.removeItem("user");
-                    }}>Logout</Button>
+                    <h2 className='mx-2 d-inline' style={{cursor: "pointer"}} onClick={() => {}}>
+                        <i className="bi bi-person-circle"></i>
+                    </h2>
                 </div>
             </div>
             <div className='row'>
