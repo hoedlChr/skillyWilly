@@ -60,7 +60,13 @@ function CreateAccount() {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
+            if(data.id === "success"){
+                //redirect to login page
+                window.location.href = "/login";
+            } else {
+                //show error message
+                console.log(data);
+            }
         }).finally(() => {
             setIsLoading(false);
         });
