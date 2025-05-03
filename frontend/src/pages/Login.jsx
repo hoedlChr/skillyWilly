@@ -7,11 +7,25 @@ function Login({setUser}) {
     const [password, setPassword] = useState("");
 
     const handleLogin = () => {
-        // Perform login logic here
-        console.log("Login clicked");
-        // naviagte to dashboard
-        window.location.href = "/Dashboard";
-        localStorage.setItem("user", JSON.stringify({username: username, password: password}));
+        const formdata = new FormData();
+        formdata.append("username", username);
+        formdata.append("password", password);
+
+        const requestOptions = {
+        method: "POST",
+        body: formdata,
+        redirect: "follow"
+        };
+
+        fetch("http://localhost:8080/api/users/verify", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+            setUser({username: username, password: password, id: result.id});
+            localStorage.setItem("user", JSON.stringify({username: username, password: password, id: result.id}));
+            // naviagte to dashboard
+            window.location.href = "/Dashboard";
+        })
+        .catch((error) => console.error(error));
     }
 
 
