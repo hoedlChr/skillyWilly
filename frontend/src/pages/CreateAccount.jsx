@@ -73,6 +73,16 @@ function CreateAccount() {
         
     }
 
+    let disabled = false;
+    if(username === "" || usedUsername.includes(username)){
+        disabled = true;
+    } else if (password !== password2){
+        disabled = true;
+    } else if (email === "" || password === "" || password2 === ""){
+        disabled = true;
+    } else if (location === ""){
+        disabled = true;
+    }
 
     return (
         <div className='w-50 m-auto mt-5'>
@@ -184,7 +194,7 @@ function CreateAccount() {
                 {
                     isLoading ? 
                     <LoadingBar /> :
-                    <Button disabled={password !== password2 || usedUsername.includes(username)} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
+                    <Button disabled={disabled} onClick={() => sendData()} className="btn-primary my-2">Create Account</Button>
                 }  
                     <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
