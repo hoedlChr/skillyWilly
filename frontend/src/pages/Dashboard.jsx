@@ -18,6 +18,7 @@ function Dashboard({user, setUser}) {
     const [chatList, setChatList] = useState([1]);
 
     const [elementList, setElementList] = useState([]);
+    const [users, setUsers] = useState({});
 
     const height = 90;
     useEffect(() => {
@@ -27,19 +28,48 @@ function Dashboard({user, setUser}) {
                 "Content-Type": "application/json",
             },
         })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            setElementList(data);
+
+            // Fetch users
+            data.forEach(element => {
+                if (users[element.createdByUserId]) {
+                    return;
                 }
-                return res.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setElementList(data);
-            })
-            .catch((err) => {
-                console.error("Error fetching skills:", err);
+                fetch(`/api/users/${element.createdByUserId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    setUsers((prevUsers) => ({
+                        ...prevUsers,
+                        [element.createdByUserId]: data,
+                    }));
+                })
+                .catch((err) => {
+                    console.error("Error fetching skills:", err);
+                });
             });
+
+        })
+        .catch((err) => {
+            console.error("Error fetching skills:", err);
+        });
+
     }, []);
 
     return (<>
@@ -57,7 +87,7 @@ function Dashboard({user, setUser}) {
                     </div>:null
                 }
                 <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
-                        <ElementList setShowChat={setShowChat} setShowElement={setShowElement}/>
+                        <ElementList data={elementList} users={users} setShowChat={setShowChat} setShowElement={setShowElement}/>
                 </div>
                 {
                     showChat === false && showElement === false ? null:
