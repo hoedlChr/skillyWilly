@@ -8,6 +8,11 @@
 .elementItem:hover{
     background-color: #f0f0f0;
 }
+
+.selectedItem{
+    background-color: #f0f0f0;
+}
+
 .name, .ort, .title, .button {
     display: inline-block;
     vertical-align: top;

@@ -71,11 +71,11 @@ function Dashboard({user, setUser}) {
         });
 
     }, []);
-    
+
     return (<>
         <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
         <SkillOnMap data={data} users={users} show={showElementsOnMap} setShow={setShowElementsOnMap}/>
-        <div className='container overflow-hidden'>
+        <div className='container'>
             <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
             <div className='row'>
                 {
@@ -87,7 +87,7 @@ function Dashboard({user, setUser}) {
                     </div>:null
                 }
                 <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
-                        <ElementList data={data} users={users} setShowChat={setShowChat} setShowElement={setShowElement}/>
+                        <ElementList data={data} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
                 </div>
                 {
                     showChat === false && showElement === false ? null:

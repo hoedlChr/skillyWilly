@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './ElementItem.css';
 import Button from '../../components/Button';
 
-function ElementItem({mySkilly=false,setShowChat, setShowElement, title, name, ort, id}) {
+function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement, title, name, ort, id}) {
 
     const clickChat = (e) => {
         e.stopPropagation();
@@ -21,14 +21,16 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, title, name, o
         e.stopPropagation();
         console.log("delete item");
     }
-
+    console.log(showElement === id, id)
     return (
         <table style={{width: "100%"}} onClick={clickItem}>
             <tbody>
-                <tr className='elementItem clickable mb-2 d-flex align-items-center justify-content-between'>
-                    <td className='name'>
+                <tr className={'elementItem clickable mb-2 d-flex align-items-center justify-content-between ' + (showElement === id ? "selectedItem" : "")}>
+                    <td style={{height: "3em"}} className='name overflow-auto'>
                         {name}<br/>
-                        {ort}
+                        <small>
+                            {ort}
+                            </small>
                     </td>
                     <td className='title'>
                         {title}

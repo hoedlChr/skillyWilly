@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ElementItem from './ElementItem';
 import LoadingBar from '../../components/LoadingBar';
 
-function ElementList({mySkilly=false, data, users, setShowChat, setShowElement}) {
+function ElementList({mySkilly=false, data, users, setShowChat, setShowElement, showElement}) {
     const [elements, setElements] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -38,7 +38,9 @@ function ElementList({mySkilly=false, data, users, setShowChat, setShowElement})
                             title={element.subject} 
                             id={element.id}
                             ort={ort} 
-                            name={username} />
+                            name={username} 
+                            showElement={showElement}
+                            />
                     )
                 })
             }
