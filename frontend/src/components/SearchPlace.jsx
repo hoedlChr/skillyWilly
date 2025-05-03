@@ -9,6 +9,12 @@ function SearchPlace({value, changeHandler}) {
     const [geoData, setGeoData] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if(value.display_name !== searchValue){
+            setSearchValue(value.display_name);
+        }
+    }, [value]);
+
     const findLocation = () => {
         setLoading(true);
         const location = encodeURIComponent(searchValue);
