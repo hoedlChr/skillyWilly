@@ -13,7 +13,7 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, title, name, o
 
     const clickItem = (e) => {
         e.stopPropagation();
-        setShowElement(true);
+        setShowElement(id);
         setShowChat(false);
     }
 

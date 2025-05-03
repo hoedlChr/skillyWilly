@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ElementItem from './ElementItem';
 import LoadingBar from '../../components/LoadingBar';
 
-function ElementList({mySkilly=false, setShowChat, setShowElement}) {
+function ElementList({mySkilly=false, data, users, setShowChat, setShowElement}) {
     const [elements, setElements] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -15,33 +15,33 @@ function ElementList({mySkilly=false, setShowChat, setShowElement}) {
     if(loading){
         return (<LoadingBar />)
     }
-
     return (
         <div>
             Elements
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christophasdfasdfsafdasfsafd"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeldasdfsdfasdfsadf"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmierenasdfasdfsdafsdfsadfsad"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-            <ElementItem mySkilly={mySkilly} setShowChat={setShowChat} setShowElement={setShowElement} title={"Programmieren"} ort={"Eichfeld"} name={"Christoph"} />
-        </div>
+            {
+                data.map((element, index) => {
+                    let ort = "";
+                    if(users[element.createdByUserId] !== undefined && users[element.createdByUserId].hasOwnProperty("location") === true){
+                        ort = users[element.createdByUserId].location.display_name;
+                    }
+                    let username = "";
+                    if(users[element.createdByUserId] !== undefined && users[element.createdByUserId].hasOwnProperty("username") === true){
+                        username = users[element.createdByUserId].username;
+                    }
+                    return (
+                        <ElementItem 
+                            key={index} 
+                            mySkilly={mySkilly} 
+                            setShowChat={setShowChat} 
+                            setShowElement={setShowElement} 
+                            title={element.subject} 
+                            id={element.id}
+                            ort={ort} 
+                            name={username} />
+                    )
+                })
+            }
+            </div>
     );
 }
 
