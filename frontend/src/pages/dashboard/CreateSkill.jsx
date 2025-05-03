@@ -4,7 +4,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import InputField from "../../components/InputField";
 import StandardInputField from "../../components/StandardInputField";
 
-function CreateSkill({ show, setShow }) {
+function CreateSkill({ show, setShow, user}) {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [location, setLocation] = useState("");
@@ -16,7 +16,8 @@ function CreateSkill({ show, setShow }) {
 		let data = {
 			subject: title,
 			body: description,
-			userId: 29,
+			created: new Date().toISOString(),
+			userId: user.id,
 		};
 
 		fetch(`/api/skills`, {
