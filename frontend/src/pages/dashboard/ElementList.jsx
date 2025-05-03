@@ -15,18 +15,19 @@ function ElementList({mySkilly=false, data, users, setShowChat, setShowElement})
     if(loading){
         return (<LoadingBar />)
     }
+
     return (
         <div>
             Elements
             {
                 data.map((element, index) => {
                     let ort = "";
-                    if(users[element.createdByUserId] !== undefined && users[element.createdByUserId].hasOwnProperty("location") === true){
-                        ort = users[element.createdByUserId].location.display_name;
+                    if(users[element.userId] !== undefined && users[element.userId].hasOwnProperty("location") === true){
+                        ort = users[element.userId].location.display_name;
                     }
                     let username = "";
-                    if(users[element.createdByUserId] !== undefined && users[element.createdByUserId].hasOwnProperty("username") === true){
-                        username = users[element.createdByUserId].username;
+                    if(users[element.userId] !== undefined && users[element.userId].hasOwnProperty("username") === true){
+                        username = users[element.userId].username;
                     }
                     return (
                         <ElementItem 

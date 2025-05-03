@@ -34,7 +34,7 @@ function SkillOnMap({ data, users, show, setShow }) {
 				position: [parseFloat(user.location.lat), parseFloat(user.location.lon)],
 				content: `${user.username}`,
 			};
-			let skillsbyUser = data.filter((skill) => {return skill.createdByUserId === parseInt(user_id)});
+			let skillsbyUser = data.filter((skill) => {return skill.userId === parseInt(user_id)});
 			
 			if (skillsbyUser.length > 0) {
 				marker.content = `Skillys: ${skillsbyUser.map((skill) => skill.subject).join(", ")}`;

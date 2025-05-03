@@ -17,7 +17,7 @@ function Dashboard({user, setUser}) {
     const [showElementsOnMap, setShowElementsOnMap] = useState(false);
     const [chatList, setChatList] = useState([1]);
 
-    const [elementList, setElementList] = useState([]);
+    const [data, setData] = useState([]);
     const [users, setUsers] = useState({});
 
     const height = 90;
@@ -35,14 +35,14 @@ function Dashboard({user, setUser}) {
             return res.json();
         })
         .then((data) => {
-            setElementList(data);
+            setData(data);
 
             // Fetch users
             data.forEach(element => {
-                if (users[element.createdByUserId]) {
+                if (users[element.userId]) {
                     return;
                 }
-                fetch(`/api/users/${element.createdByUserId}`, {
+                fetch(`/api/users/${element.userId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ function Dashboard({user, setUser}) {
                 .then((data) => {
                     setUsers((prevUsers) => ({
                         ...prevUsers,
-                        [element.createdByUserId]: data,
+                        [element.userId]: data,
                     }));
                 })
                 .catch((err) => {
@@ -71,10 +71,10 @@ function Dashboard({user, setUser}) {
         });
 
     }, []);
-
+    
     return (<>
-        <CreateSkill show={showCreateSkill} setShow={setShowCreateSkill}/>
-        <SkillOnMap show={showElementsOnMap} setShow={setShowElementsOnMap}/>
+        <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
+        <SkillOnMap data={data} users={users} show={showElementsOnMap} setShow={setShowElementsOnMap}/>
         <div className='container overflow-hidden'>
             <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
             <div className='row'>
@@ -87,7 +87,7 @@ function Dashboard({user, setUser}) {
                     </div>:null
                 }
                 <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
-                        <ElementList data={elementList} users={users} setShowChat={setShowChat} setShowElement={setShowElement}/>
+                        <ElementList data={data} users={users} setShowChat={setShowChat} setShowElement={setShowElement}/>
                 </div>
                 {
                     showChat === false && showElement === false ? null:
@@ -98,7 +98,7 @@ function Dashboard({user, setUser}) {
                         }
                         {
                             showElement ?
-                            <ElementView/> :null
+                            <ElementView id={showElement} data={data} users={users}/> :null
                         }
                     </div>
                 }
