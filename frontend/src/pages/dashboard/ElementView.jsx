@@ -11,20 +11,21 @@ function ElementView({id, data, users}) {
         if (!element) {
             return;
         }
-        setName(users[element.createdByUserId].username);
+        setName(users[element.userId].username);
         setTitle(element.subject);
         setCreated(element.created);
-        setOrt(users[element.createdByUserId].location.display_name);
-        setDescription(element.description);
+        setOrt(users[element.userId].location.display_name);
+        setDescription(element.body);
     },[id])
 
     console.log(id, data, users)
     return (
-        <div>
+        <div className='mt-4'>
             <h2>{title}</h2>
             <h4>{name}</h4>
-            <h4>{ort}</h4>
+            <p>{ort}</p>
             <p className='text-end'>{created}</p>
+            <hr />
             <div dangerouslySetInnerHTML={{__html: description}}/>
         </div>
     );
