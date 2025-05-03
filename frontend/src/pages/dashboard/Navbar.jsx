@@ -12,7 +12,7 @@ function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
                     <h2><a style={{color: "black", textDecoration: "none"}} href="/Dashboard">{text}</a></h2>
                 </div>
                 <div className="col-4 text-end">
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="d-flex justify-content-end gap-2">
                         {
                             setShowElementsOnMap === undefined ? null:
                             <Button className='btn-primary' onClick={() => {
