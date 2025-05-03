@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy } from 'react'
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Test from "./pages/Test";
-import Welcome from './pages/Welcome';
 import ErrorBoundary from "./ErrorBoundary";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Login from './pages/Login';
 import CreateAccount from './pages/CreateAccount';
-import Dashboard from './pages/Dashboard';
 import './App.css';
 import PasswordForgotten from './pages/PasswordForgotten';
 import LoadingBar from './components/LoadingBar';
-import UserSettings from './pages/UserSettings';
-import MySkilly from './pages/MySkilly';
+
+const Dashboard = lazy(() =>  import('./pages/Dashboard'))
+const UserSettings = lazy(() =>  import('./pages/UserSettings'))
+const MySkilly = lazy(() =>  import('./pages/MySkilly'))
+const Login = lazy(() =>  import('./pages/Login'))
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null);
@@ -51,7 +51,7 @@ function App() {
             </>
           ) : (
             <>
-              <Route path="*" element={<Login />} />
+              <Route path="*" element={<Login setUser={setUser} />} />
               <Route path="createAccount" element={<CreateAccount setIsLoading={setIsLoading} />} />
               <Route path="passwordForgotten" element={<PasswordForgotten />} />
             </>
