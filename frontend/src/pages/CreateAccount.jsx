@@ -41,11 +41,6 @@ function CreateAccount() {
             password: password,
             firstname: firstname,
             lastname: lastname,
-            // location: {
-            //     display_name: location.display_name,
-            //     lat: location.lat,
-            //     lon: location.lon,
-            // }
             location: location
         }
 
@@ -173,16 +168,6 @@ function CreateAccount() {
                 />
                 : null
             }
-            <StandardInputField 
-                label="Phone"
-                id={"phone"}
-                className={""}
-                readOnly={false}
-                placeholder={""}
-                value={phone}
-                helptext={""}
-                changeHandler={setPhone}
-            />
             <StandardInputField
                 id={"location"}
                 label={"Location"}
