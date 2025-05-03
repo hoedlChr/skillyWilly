@@ -5,8 +5,9 @@ import InputField from "../../components/InputField";
 import StandardInputField from "../../components/StandardInputField";
 import Map from "../../components/Map";
 
-function SkillOnMap({ show, setShow }) {
+function SkillOnMap({ data, users, show, setShow }) {
 	const [location, setLocation] = useState(null);
+	const [markers, setMarkers] = useState([]);
 	const cancel = () => {
 		setShow(false);
 	};
@@ -27,6 +28,19 @@ function SkillOnMap({ show, setShow }) {
 				}
 			);
 		}
+		Object.keys(users).forEach((user_id) => {
+			const user = users[user_id];
+			let marker = {
+				position: [parseFloat(user.location.lat), parseFloat(user.location.lon)],
+				content: `${user.username}`,
+			};
+			let skillsbyUser = data.filter((skill) => {return skill.createdByUserId === parseInt(user_id)});
+			
+			if (skillsbyUser.length > 0) {
+				marker.content = `Skillys: ${skillsbyUser.map((skill) => skill.subject).join(", ")}`;
+			}
+			setMarkers((prevMarkers) => [...prevMarkers, marker]);
+		});
 	}, [show]);
 
 	return (
@@ -39,7 +53,7 @@ function SkillOnMap({ show, setShow }) {
 		<ModalBody>
 			{
 				location === null ? null :
-				<Map markers={[{position: [47.06364187205705, 15.448151871947529], content: "Hello"}]} center={location} style={{height: "60vh"}}/>
+				<Map markers={markers} center={location} style={{height: "60vh"}}/>
 			}
 		</ModalBody>
 		<ModalFooter>
