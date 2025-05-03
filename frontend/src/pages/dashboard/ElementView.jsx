@@ -13,7 +13,8 @@ function ElementView({id, data, users}) {
         }
         setName(users[element.userId].username);
         setTitle(element.subject);
-        setCreated(element.created);
+        let date = new Date(element.created);
+        setCreated(date.toLocaleDateString() + " " + date.toLocaleTimeString());
         setOrt(users[element.userId].location.display_name);
         setDescription(element.body);
     },[id])
@@ -24,7 +25,9 @@ function ElementView({id, data, users}) {
             <h2>{title}</h2>
             <h4>{name}</h4>
             <p>{ort}</p>
-            <p className='text-end'>{created}</p>
+            <div className='text-end'>
+                <small >{created}</small>
+            </div>
             <hr />
             <div dangerouslySetInnerHTML={{__html: description}}/>
         </div>
