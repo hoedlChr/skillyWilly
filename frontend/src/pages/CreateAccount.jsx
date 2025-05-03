@@ -12,7 +12,6 @@ function CreateAccount() {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
     const [location, setLocation] = useState("");
 
     const [usedUsername, setUsedUsername] = useState([]);
