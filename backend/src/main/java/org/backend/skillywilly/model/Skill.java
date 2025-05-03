@@ -34,7 +34,7 @@ public class Skill {
     /**
      * Detailed description of the skill.
      */
-    @Column(name = "body", nullable = false)
+    @Column(name = "body", nullable = false, columnDefinition = "TEXT")
     private String body;
 
     /**
