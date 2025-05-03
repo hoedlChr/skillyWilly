@@ -40,7 +40,7 @@ function MySkilly({user}) {
             <Navbar text="MySkilly" setShowCreateSkill={setShowCreateSkill}/>
             <div className='row'>
                 <div className='col-5 overflow-auto' style={{height: `${height}vh`}}>
-                        <ElementList data={data} users={users} mySkilly={true} setShowElement={setShowElement}/>
+                        <ElementList data={data} user={user} users={users} mySkilly={true} setShowElement={setShowElement}/>
                 </div>
                 {
                     showElement === false ? null:

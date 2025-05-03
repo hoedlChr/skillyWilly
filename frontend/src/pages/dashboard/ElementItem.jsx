@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './ElementItem.css';
 import Button from '../../components/Button';
 
-function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement, title, name, ort, id}) {
+function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement,user, creatorId, title, name, ort, id}) {
 
     const clickChat = (e) => {
         e.stopPropagation();
@@ -18,10 +18,33 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement, t
     }
 
     const deleteItem = (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        console.log("delete item");
+        if(!mySkilly){
+            return;
+        }
+        if(user.id !== creatorId){
+            return;
+        }
+        if(!window.confirm("Are you sure you want to delete this item?")){
+            return;
+        }
+        fetch(`/api/skills/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
     }
-    console.log(showElement === id, id)
+    
     return (
         <table style={{width: "100%"}} onClick={clickItem}>
             <tbody>
