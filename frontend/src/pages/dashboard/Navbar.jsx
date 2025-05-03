@@ -13,12 +13,18 @@ function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
                 </div>
                 <div className="col-4 text-end">
                     <div className="d-flex align-items-center gap-2">
-                        <Button className='btn-primary' onClick={() => {
-                            setShowElementsOnMap(true);
-                        }}>show Skilly on Map</Button>
-                        <Button className='btn-primary' onClick={() => {
-                            setShowCreateSkill(true);
-                        }}>New Skilly</Button>
+                        {
+                            setShowElementsOnMap === undefined ? null:
+                            <Button className='btn-primary' onClick={() => {
+                                setShowElementsOnMap(true);
+                            }}>show Skilly on Map</Button>
+                        }
+                        {
+                            setShowCreateSkill === undefined ? null:
+                            <Button className='btn-primary' onClick={() => {
+                                setShowCreateSkill(true);
+                            }}>New Skilly</Button>
+                        }
                         
                         <Dropdown isOpen={showUserContextMenu} toggle={() => {setShowUserContextMenu(!showUserContextMenu)}}>
                             <DropdownToggle tag="span" data-toggle="dropdown" aria-expanded={showUserContextMenu} style={{cursor: "pointer"}}>
