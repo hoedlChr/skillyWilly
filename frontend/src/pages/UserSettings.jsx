@@ -4,34 +4,80 @@ import Button from '../components/Button';
 import InfoMessage from '../components/InfoMessage';
 import Navbar from './dashboard/Navbar';
 
-function UserSettings() {
+function UserSettings({user}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
     const [location, setLocation] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    function sendData({setIsLoading}){
+    const [usedUsername, setUsedUsername] = useState([]);
+
+    useEffect(() => {
+        //fetch user data
+        fetch(`/api/users/${user.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            console.log(data);
+            setUsername(data.username);
+            setFirstname(data.firstname);
+            setLastname(data.lastname);
+            setEmail(data.email);
+            setLocation(data.location);
+            setPassword(data.password);
+            setPassword2(data.password);
+        })
+        .catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+
+        fetch(`/api/users/usernames`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        )
+        .then(res => res.json())
+        .then(data => {
+            let temp = data;
+            temp.splice(temp.indexOf(user.username), 1);
+            setUsedUsername(temp);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+    },[])
+
+    function sendData(){
         let data = {
             username: username,
             email: email,
             password: password,
-            // firstname: firstname,
-            // lastname: lastname,
-            location: JSON.stringify(location)
-            // location:{
-            //     country:"Germany",
-            //     city: "Berlin",
-            // }
+            firstname: firstname,
+            lastname: lastname,
+            location: location
         }
 
         //post data to backend
         setIsLoading(true);
-        fetch(`/api/users/register`, {
-            method: "POST",
+        fetch(`/api/users/${user.id}`, {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -42,8 +88,18 @@ function UserSettings() {
             console.log(data);
         }).finally(() => {
             setIsLoading(false);
-        });
-        
+        });   
+    }
+
+    let disabled = false;
+    if(username === "" || usedUsername.includes(username)){
+        disabled = true;
+    } else if (password !== password2){
+        disabled = true;
+    } else if (email === "" || password === "" || password2 === ""){
+        disabled = true;
+    } else if (location === ""){
+        disabled = true;
     }
 
 
@@ -92,6 +148,16 @@ function UserSettings() {
                 required={true}
                 changeHandler={setUsername}
             />
+            {
+                usedUsername.includes(username) ? 
+                <InfoMessage 
+                    heading="Username already taken"
+                    body="The username is already taken. Please try again."
+                    type="danger"
+                    className="my-2"
+                />
+                : null
+            }
             <StandardInputField 
                 label="Password"
                 id={"password"}
@@ -126,16 +192,6 @@ function UserSettings() {
                 />
                 : null
             }
-            <StandardInputField 
-                label="Phone"
-                id={"phone"}
-                className={""}
-                readOnly={false}
-                placeholder={""}
-                value={phone}
-                helptext={""}
-                changeHandler={setPhone}
-            />
             <StandardInputField
                 id={"location"}
                 label={"Location"}
@@ -145,7 +201,7 @@ function UserSettings() {
             
 
             <div className='d-grid'>
-                <Button disabled={password !== password2} onClick={() => sendData()} className="btn-primary my-2">Save Account</Button>
+                <Button disabled={disabled} onClick={() => sendData()} className="btn-primary my-2">Save Account</Button>
                 <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
         </div>
