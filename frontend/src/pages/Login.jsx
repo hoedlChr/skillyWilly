@@ -17,11 +17,16 @@ function Login({setUser}) {
         redirect: "follow"
         };
 
-        fetch("http://localhost:8080/api/users/verify", requestOptions)
-        .then((response) => response.text())
+        fetch("/api/users/verify", requestOptions)
+        .then((response) => {console.log(response);return response.json()})
         .then((result) => {
-            setUser({username: username, password: password, id: result.id});
-            localStorage.setItem("user", JSON.stringify({username: username, password: password, id: result.id}));
+            let data = {
+                username: username,
+                password: password,
+                id: result.id
+            };
+            setUser(data);
+            localStorage.setItem("user", JSON.stringify(data));
             // naviagte to dashboard
             window.location.href = "/Dashboard";
         })
