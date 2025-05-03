@@ -47,7 +47,7 @@ public class Skill {
      * ID of the user who created the skill.
      */
     @Column(name = "user_id", nullable = false)
-    private Long createdByUserId;
+    private Long userId;
 
     /**
      * The user who owns this skill (Many-to-One relationship).
