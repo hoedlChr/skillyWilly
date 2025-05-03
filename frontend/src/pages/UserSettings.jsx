@@ -31,7 +31,6 @@ function UserSettings({user}) {
             return res.json();
         })
         .then((data) => {
-            console.log(data);
             setUsername(data.username);
             setFirstname(data.firstname);
             setLastname(data.lastname);
