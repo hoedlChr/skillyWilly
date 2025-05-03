@@ -17,10 +17,30 @@ function Dashboard({user, setUser}) {
     const [showElementsOnMap, setShowElementsOnMap] = useState(false);
     const [chatList, setChatList] = useState([1]);
 
-    const height = 90;
-    useEffect(()=>{
+    const [elementList, setElementList] = useState([]);
 
-    },[])
+    const height = 90;
+    useEffect(() => {
+        fetch(`/api/skills`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setElementList(data);
+            })
+            .catch((err) => {
+                console.error("Error fetching skills:", err);
+            });
+    }, []);
 
     return (<>
         <CreateSkill show={showCreateSkill} setShow={setShowCreateSkill}/>
