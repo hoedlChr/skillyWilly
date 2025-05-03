@@ -32,13 +32,13 @@ function ElementEditor({id, data, setShowElement, user}) {
 			},
 			body: JSON.stringify(data),
 		})
-			.then((res) => res.json())
-			.then((data) => {
-				console.log(data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 	}
 
     const cancel = () => {
