@@ -15,7 +15,11 @@ function ElementList({mySkilly=false, data, users, user, setShowChat, setShowEle
     if(loading){
         return (<LoadingBar />)
     }
-
+    if(data === undefined || data.length === 0){
+        return (
+            <LoadingBar />
+        )
+    }
     return (
         <div>
             Elements
