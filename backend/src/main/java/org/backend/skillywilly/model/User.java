@@ -1,7 +1,9 @@
 package org.backend.skillywilly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -83,6 +85,8 @@ public class User {
      * defines the relationship.
      */
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
     private List<LikeSkill> likeSkills;
 
     /**
@@ -90,6 +94,8 @@ public class User {
      * This field is a one-to-many relationship mapped by the "user" field in the Skill entity.
      */
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
     private List<Skill> skills;
 
     /**
@@ -98,6 +104,8 @@ public class User {
      * The "userFollowed" field in the Follower entity defines the relationship.
      */
     @OneToMany(mappedBy = "userFollowed")
+    @JsonIgnore
+    @ToString.Exclude
     private List<Follower> followers;
 
     /**
@@ -106,6 +114,8 @@ public class User {
      * Each entry in the list denotes a Follower entity where this user is the follower.
      */
     @OneToMany(mappedBy = "userFollower")
+    @JsonIgnore
+    @ToString.Exclude
     private List<Follower> following;
 
     /**
@@ -113,6 +123,8 @@ public class User {
      * This is a one-to-many relationship mapped by the "userFrom" field in the Message entity.
      */
     @OneToMany(mappedBy = "userFrom")
+    @JsonIgnore
+    @ToString.Exclude
     private List<Message> sentMessages;
 
     /**
@@ -121,5 +133,7 @@ public class User {
      * The relationship is mapped by the "userTo" field in the Message entity.
      */
     @OneToMany(mappedBy = "userTo")
+    @JsonIgnore
+    @ToString.Exclude
     private List<Message> receivedMessages;
 }
