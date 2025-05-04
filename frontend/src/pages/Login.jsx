@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import StandardInputField from '../components/StandardInputField';
-import Button from '../components/Button';
+import React, { lazy, useEffect, useState } from 'react';
+
+const StandardInputField = lazy(() => import('../components/StandardInputField'));
+const Button = lazy(() => import('../components/Button'));
 
 function Login({setUser}) {
     const [username, setUsername] = useState("");

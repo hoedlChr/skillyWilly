@@ -1,6 +1,6 @@
-import React from 'react';
-import FCKEditor from './FCKEditor';
-import SearchPlace from './SearchPlace';
+import React, { lazy } from 'react';
+const FCKEditor = lazy(()=>import('./FCKEditor'));
+const SearchPlace = lazy(()=>import('./SearchPlace'));
 
 function InputField({
     id,
