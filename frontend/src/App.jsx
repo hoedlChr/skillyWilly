@@ -1,6 +1,5 @@
 import { useState, useEffect, lazy } from 'react'
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Test from "./pages/Test";
 import ErrorBoundary from "./ErrorBoundary";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -43,7 +42,6 @@ function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="test" element={<Test />} />
               <Route path="Dashboard" element={<Dashboard user={user} />} />
               <Route path="UserSettings" element={<UserSettings user={user} />} />
               <Route path="MySkilly" element={<MySkilly user={user} />} />
