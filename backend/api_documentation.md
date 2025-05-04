@@ -68,3 +68,14 @@
 | `GET`        | `/{userId}/following` | Gibt die Liste der Benutzer zurück, denen ein Benutzer folgt               |
 
 ---
+
+## **6. MessageController**
+
+**Pfad:** `/api/messages`
+
+| HTTP-Methode | Endpunkt                 | Beschreibung                                                                                                       |
+|--------------|--------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `POST`       | `/`                      | Erstellt eine neue Nachricht zwischen zwei Benutzern (benötigt `senderId`, `recipientId`, `content`)               |
+| `GET`        | `/{messageId}`           | Gibt eine Nachricht anhand ihrer ID zurück                                                                         |
+| `GET`        | `/conversation/{userId}` | Gibt alle Nachrichten zurück, die zwischen dem aktuellen Benutzer und einem gegebenen Benutzer ausgetauscht wurden |
+| `DELETE`     | `/{messageId}`           | Löscht eine Nachricht anhand ihrer ID                                                                              |
