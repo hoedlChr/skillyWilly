@@ -1,7 +1,9 @@
 package org.backend.skillywilly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
@@ -69,6 +71,8 @@ public class Message {
      */
     @ManyToOne
     @JoinColumn(name = "id_user_from", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
     private User userFrom;
 
     /**
@@ -80,5 +84,8 @@ public class Message {
      */
     @ManyToOne
     @JoinColumn(name = "id_user_to", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
     private User userTo;
+
 }

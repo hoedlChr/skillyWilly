@@ -1,7 +1,9 @@
 package org.backend.skillywilly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
@@ -93,7 +95,10 @@ public class Follower {
      */
     @ManyToOne
     @JoinColumn(name = "id_user_follwed", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
     private User userFollowed;
+
 
     /**
      * Represents the user entity who follows another user within the system.
@@ -109,5 +114,7 @@ public class Follower {
      */
     @ManyToOne
     @JoinColumn(name = "id_user_follwer", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
     private User userFollower;
 }

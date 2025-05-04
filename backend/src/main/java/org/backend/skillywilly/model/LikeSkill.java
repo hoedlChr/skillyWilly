@@ -1,7 +1,9 @@
 package org.backend.skillywilly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Represents the "LikeSkill" entity, which establishes a link between a user and a skill they have "liked".
@@ -53,7 +55,10 @@ public class LikeSkill {
      */
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
     private User user;
+    ;
 
     /**
      * Represents the many-to-one relationship between the LikeSkill entity and the Skill entity.
@@ -63,5 +68,8 @@ public class LikeSkill {
      */
     @ManyToOne
     @JoinColumn(name = "skill_id", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
     private Skill skill;
+
 }
