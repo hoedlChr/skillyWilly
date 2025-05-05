@@ -123,8 +123,6 @@ public class User {
      * This is a one-to-many relationship mapped by the "userFrom" field in the Message entity.
      */
     @OneToMany(mappedBy = "userFrom")
-    @JsonIgnore
-    @ToString.Exclude
     private List<Message> sentMessages;
 
     /**
@@ -133,7 +131,5 @@ public class User {
      * The relationship is mapped by the "userTo" field in the Message entity.
      */
     @OneToMany(mappedBy = "userTo")
-    @JsonIgnore
-    @ToString.Exclude
     private List<Message> receivedMessages;
 }
