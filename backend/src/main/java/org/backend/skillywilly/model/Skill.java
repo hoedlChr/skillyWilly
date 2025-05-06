@@ -1,12 +1,9 @@
 package org.backend.skillywilly.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * Represents the "Skill" entity, encapsulating information related to a specific skill.
@@ -48,21 +45,4 @@ public class Skill {
      */
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    /**
-     * The user who owns this skill (Many-to-One relationship).
-     */
-    @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonIgnore
-    @ToString.Exclude
-    private User user;
-
-    /**
-     * List of likes associated with this skill (One-to-Many relationship).
-     */
-    @OneToMany(mappedBy = "skill")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<LikeSkill> likeSkills;
 }

@@ -38,35 +38,6 @@ public class Follower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    /**
-     * Represents the ID of the user being followed in the follower relationship.
-     * <p>
-     * This field maps to the "id_user_follwed" column in the "Follower" table and
-     * stores the unique identifier of the user that is being followed.
-     * <p>
-     * Annotations:
-     * - @Column: Specifies the database column name "id_user_follwed".
-     * - nullable = false: Indicates this field cannot be null.
-     */
-    @Column(name = "id_user_follwed", nullable = false)
-    private Long userFollowedId;
-
-    /**
-     * Represents the ID of the user who is following another user in the system.
-     * <p>
-     * This field is mapped to the "id_user_follwer" column in the "Follower" table
-     * with a non-null constraint to ensure that every follower relationship has a valid follower user ID.
-     * <p>
-     * It serves as a foreign key referencing the primary key of the "User" entity
-     * and is used to establish a bidirectional many-to-one relationship with the User entity.
-     * <p>
-     * Annotations:
-     * - @Column: Maps this field to the "id_user_follwer" database column and specifies constraints.
-     */
-    @Column(name = "id_user_follwer", nullable = false)
-    private Long userFollowerId;
-
     /**
      * Represents the timestamp when the follower relationship was created.
      * <p>
@@ -98,8 +69,6 @@ public class Follower {
     @JsonIgnore
     @ToString.Exclude
     private User userFollowed;
-
-
     /**
      * Represents the user entity who follows another user within the system.
      * <p>
@@ -117,4 +86,31 @@ public class Follower {
     @JsonIgnore
     @ToString.Exclude
     private User userFollower;
+    /**
+     * Represents the ID of the user being followed in the follower relationship.
+     * <p>
+     * This field maps to the "id_user_follwed" column in the "Follower" table and
+     * stores the unique identifier of the user that is being followed.
+     * <p>
+     * Annotations:
+     * - @Column: Specifies the database column name "id_user_follwed".
+     * - nullable = false: Indicates this field cannot be null.
+     */
+    @Column(name = "id_user_follwed", nullable = false)
+    private Long userFollowedId;
+
+    /**
+     * Represents the ID of the user who is following another user in the system.
+     * <p>
+     * This field is mapped to the "id_user_follwer" column in the "Follower" table
+     * with a non-null constraint to ensure that every follower relationship has a valid follower user ID.
+     * <p>
+     * It serves as a foreign key referencing the primary key of the "User" entity
+     * and is used to establish a bidirectional many-to-one relationship with the User entity.
+     * <p>
+     * Annotations:
+     * - @Column: Maps this field to the "id_user_follwer" database column and specifies constraints.
+     */
+    @Column(name = "id_user_follwer", nullable = false)
+    private Long userFollowerId;
 }
