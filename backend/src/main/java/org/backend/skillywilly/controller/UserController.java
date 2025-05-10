@@ -1,7 +1,7 @@
 package org.backend.skillywilly.controller;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,6 +9,7 @@ import org.backend.skillywilly.model.User;
 import org.backend.skillywilly.service.PasswordService;
 import org.backend.skillywilly.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,10 @@ public class UserController {
      */
     @Autowired
     private PasswordService passwordService;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
 
     /**
      * Creates a new user account with the given user details.
@@ -171,7 +176,7 @@ public class UserController {
                     String sameSiteCookie = String.format("%s; %s",
                             authCookie.toString(), "SameSite=Strict");
                     response.addHeader("Set-Cookie", sameSiteCookie);
-                    
+
                     user.setPassword(null);
 
                     return ResponseEntity.ok()
@@ -222,8 +227,7 @@ public class UserController {
     }
 
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode("SkillyWilly");
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
 
