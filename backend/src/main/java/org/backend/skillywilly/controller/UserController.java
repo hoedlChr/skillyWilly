@@ -1,5 +1,6 @@
 package org.backend.skillywilly.controller;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -47,6 +48,8 @@ public class UserController {
     @Autowired
     private PasswordService passwordService;
 
+    // Signierungsschlüssel, sollte in einer echten Anwendung sicher gespeichert werden
+    private static final Key SIGNING_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     /**
      * Creates a new user account with the given user details.
@@ -75,14 +78,25 @@ public class UserController {
     }
 
     /**
-     * Retrieves a list of all users.
+     * Retrieves a list of all users. Requires a valid authentication token.
      *
-     * @return a ResponseEntity containing a list of all users with an HTTP status of 200 (OK).
+     * @param token    The authentication token from the cookie
+     * @param response The HTTP response object
+     * @return a ResponseEntity containing a list of all users with an HTTP status of 200 (OK)
+     * or a 401 UNAUTHORIZED if no valid token is provided.
      * In the event of an error, returns an appropriate error response.
      */
     @GetMapping
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<?> getAllUsers(@CookieValue(name = "auth-token", required = false) String token,
+                                         HttpServletResponse response) {
         try {
+            if (token == null || token.isEmpty() || !validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new HashMap<String, String>() {{
+                            put("message", "Nicht autorisiert: Bitte melden Sie sich an");
+                        }});
+            }
+
             List<User> users = userService.getAllUsers();
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {
@@ -221,7 +235,12 @@ public class UserController {
                 }});
     }
 
-
+    /**
+     * Generiert ein JWT-Token für den angegebenen Benutzer.
+     *
+     * @param user Der Benutzer, für den das Token generiert werden soll
+     * @return Das generierte JWT-Token als String
+     */
     private String generateJwtToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
@@ -232,10 +251,35 @@ public class UserController {
                 .compact();
     }
 
+    /**
+     * Gibt den Signierungsschlüssel für JWT-Tokens zurück.
+     *
+     * @return Der Signierungsschlüssel
+     */
     private Key getSigningKey() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        return SIGNING_KEY;
     }
 
+    /**
+     * Validiert ein JWT-Token.
+     *
+     * @param token Das zu validierende Token
+     * @return true, wenn das Token gültig ist, andernfalls false
+     */
+    private boolean validateToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // Token ist gültig, wenn es hier keine Ausnahme gibt und nicht abgelaufen ist
+            return !claims.getExpiration().before(new Date(System.currentTimeMillis()));
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     /**
      * Retrieves a list of all usernames.
@@ -255,5 +299,4 @@ public class UserController {
             return createExceptionResponse(e);
         }
     }
-
 }
