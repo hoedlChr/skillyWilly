@@ -22,6 +22,7 @@ function CreateSkill({ show, setShow, user}) {
 
 		fetch(`/api/skills`, {
 			method: "POST",
+			credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -33,7 +34,7 @@ function CreateSkill({ show, setShow, user}) {
 				cancel();
 			})
 			.catch((err) => {
-				console.log(err);
+				console.log(err);y
 			});
 	}
 

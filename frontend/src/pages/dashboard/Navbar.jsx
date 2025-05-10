@@ -5,7 +5,9 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
 	const [showUserContextMenu, setShowUserContextMenu] = useState(false);
 
+    const logout = () => {
 
+    }
     return (
         <div className='row my-2'>
                 <div className="col">
@@ -36,7 +38,7 @@ function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
                                 <DropdownItem href="/Dashboard">Dashboard</DropdownItem>
                                 <DropdownItem href="/UserSettings">User settings</DropdownItem>
                                 <DropdownItem href="/MySkilly">See My Skilly</DropdownItem>
-                                <DropdownItem onClick={()=>{console.log("logout")}}>Log out</DropdownItem>
+                                <DropdownItem onClick={logout}>Log out</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>

@@ -27,6 +27,7 @@ function ElementEditor({id, data, setShowElement, user}) {
 
 		fetch(`/api/skills/${id}`, {
 			method: "PUT",
+            credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},

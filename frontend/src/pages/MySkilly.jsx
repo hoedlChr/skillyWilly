@@ -14,6 +14,7 @@ function MySkilly({user}) {
         //fetch user data
         fetch(`/api/users/${user.id}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

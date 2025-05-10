@@ -31,6 +31,7 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement,us
         }
         fetch(`/api/skills/${id}`, {
 			method: "DELETE",
+            credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -49,11 +50,11 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement,us
         <table style={{width: "100%"}} onClick={clickItem}>
             <tbody>
                 <tr className={'elementItem clickable mb-2 d-flex align-items-center justify-content-between ' + (showElement === id ? "selectedItem" : "")}>
-                    <td style={{height: "3em"}} className='name overflow-auto'>
+                    <td style={{height: "3em"}} className='name'>
                         {name}<br/>
-                        <small>
+                        <small className='text-muted'>
                             {ort}
-                            </small>
+                        </small>
                     </td>
                     <td className='title'>
                         {title}

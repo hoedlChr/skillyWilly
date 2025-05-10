@@ -20,6 +20,7 @@ function UserSettings({user}) {
         //fetch user data
         fetch(`/api/users/${user.id}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -46,6 +47,7 @@ function UserSettings({user}) {
         fetch(`/api/users/usernames`,
             {
                 method: "GET",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -77,6 +79,7 @@ function UserSettings({user}) {
         setIsLoading(true);
         fetch(`/api/users/${user.id}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },

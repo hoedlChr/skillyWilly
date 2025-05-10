@@ -15,6 +15,7 @@ function Login({setUser}) {
         const requestOptions = {
         method: "POST",
         body: formdata,
+        credentials: "include",
         redirect: "follow"
         };
 
