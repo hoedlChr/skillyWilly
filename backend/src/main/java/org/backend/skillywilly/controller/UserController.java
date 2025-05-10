@@ -9,7 +9,6 @@ import org.backend.skillywilly.model.User;
 import org.backend.skillywilly.service.PasswordService;
 import org.backend.skillywilly.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,9 +46,6 @@ public class UserController {
      */
     @Autowired
     private PasswordService passwordService;
-
-    @Value("${jwt.secret}")
-    private String jwtSecret;
 
 
     /**
@@ -172,10 +168,14 @@ public class UserController {
                     authCookie.setPath("/");
                     authCookie.setMaxAge(7 * 24 * 60 * 60);
 
+                    // Direkt das Cookie zur Response hinzufügen
+                    response.addCookie(authCookie);
 
-                    String sameSiteCookie = String.format("%s; %s",
-                            authCookie.toString(), "SameSite=Strict");
-                    response.addHeader("Set-Cookie", sameSiteCookie);
+                    // SameSite über Header-Parameter setzen
+                    response.setHeader("Set-Cookie",
+                            String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
+                                    authCookie.getName(), authCookie.getValue(), authCookie.getMaxAge(),
+                                    authCookie.getPath()));
 
                     user.setPassword(null);
 
@@ -206,15 +206,21 @@ public class UserController {
         authCookie.setPath("/");
         authCookie.setMaxAge(0);
 
-        String sameSiteCookie = String.format("%s; %s",
-                authCookie.toString(), "SameSite=Strict");
-        response.addHeader("Set-Cookie", sameSiteCookie);
+        // Direkt das Cookie zur Response hinzufügen
+        response.addCookie(authCookie);
+
+        // SameSite über Header-Parameter setzen
+        response.setHeader("Set-Cookie",
+                String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
+                        authCookie.getName(), authCookie.getValue(), authCookie.getMaxAge(),
+                        authCookie.getPath()));
 
         return ResponseEntity.ok()
                 .body(new HashMap<String, String>() {{
                     put("message", "Erfolgreich ausgeloggt");
                 }});
     }
+
 
     private String generateJwtToken(User user) {
         return Jwts.builder()
