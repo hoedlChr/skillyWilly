@@ -1,13 +1,9 @@
 package org.backend.skillywilly.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
-import java.util.List;
 
 /**
  * Entity representing a User in the system.
@@ -75,65 +71,4 @@ public class User {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "location", columnDefinition = "json")
     private Location location;
-
-    /**
-     * Represents a list of LikeSkill entities associated with a User.
-     * This relationship is a one-to-many mapping where a single user can have multiple
-     * 'like skills'. Each LikeSkill in the list corresponds to a skill that the user has liked.
-     * <p>
-     * The `mappedBy` attribute indicates that the 'user' field in the LikeSkill entity
-     * defines the relationship.
-     */
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<LikeSkill> likeSkills;
-
-    /**
-     * Represents the list of skills associated with the user.
-     * This field is a one-to-many relationship mapped by the "user" field in the Skill entity.
-     */
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Skill> skills;
-
-    /**
-     * Represents the list of followers associated with a user.
-     * This field maps to the Follower entities where the user is being followed.
-     * The "userFollowed" field in the Follower entity defines the relationship.
-     */
-    @OneToMany(mappedBy = "userFollowed")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Follower> followers;
-
-    /**
-     * Represents the list of users that this user follows.
-     * This is a one-to-many relationship mapped by the "userFollower" field in the Follower entity.
-     * Each entry in the list denotes a Follower entity where this user is the follower.
-     */
-    @OneToMany(mappedBy = "userFollower")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Follower> following;
-
-    /**
-     * Represents the list of messages sent by this user.
-     * This is a one-to-many relationship mapped by the "userFrom" field in the Message entity.
-     */
-    @OneToMany(mappedBy = "userFrom")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Message> sentMessages;
-
-    /**
-     * Represents the messages received by the user.
-     * This is a one-to-many relationship where a user can receive multiple messages.
-     * The relationship is mapped by the "userTo" field in the Message entity.
-     */
-    @OneToMany(mappedBy = "userTo")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Message> receivedMessages;
 }

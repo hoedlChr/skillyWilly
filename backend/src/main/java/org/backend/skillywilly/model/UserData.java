@@ -71,21 +71,4 @@ public class UserData {
     @Column(name = "created")
     private Timestamp created;
 
-    /**
-     * Represents the associated User entity for this UserData instance.
-     * This field establishes a one-to-one relationship with the User entity,
-     * where the `user_id` column in the "UserData" table references the `id` column
-     * in the "User" table.
-     * <p>
-     * Constraints:
-     * - The `user_id` column is used as a foreign key to establish this relationship.
-     * - The `insertable` and `updatable` attributes are set to `false`, meaning this
-     * relationship is read-only and cannot be modified through this entity.
-     * <p>
-     * Mapped By:
-     * - `@JoinColumn(name = "user_id", referencedColumnName = "id")` specifies the linking columns.
-     */
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private User user;
 }
