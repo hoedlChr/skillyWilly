@@ -81,4 +81,17 @@ public class MessageService {
     public void deleteMessage(Long id) {
         messageRepository.deleteById(id);
     }
+
+    /**
+     * Retrieves all messages that a specific user has sent or received.
+     * Messages are ordered by creation timestamp, with the most recent messages first.
+     *
+     * @param userId ID of the user whose messages should be retrieved
+     * @return List of messages where the specified user is either sender or recipient
+     * @throws RuntimeException if the user doesn't exist or if there's an error retrieving the messages
+     */
+    public List<Message> getAllUserMessages(Long userId) {
+        return messageRepository.findAllUserMessages(userId);
+    }
+
 }

@@ -1,5 +1,10 @@
 package org.backend.skillywilly.controller;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.backend.skillywilly.model.User;
 import org.backend.skillywilly.service.PasswordService;
 import org.backend.skillywilly.service.UserService;
@@ -8,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Key;
+import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -139,38 +147,85 @@ public class UserController {
         }
     }
 
-    /**
-     * Verifies user credentials by checking the provided username and password
-     * against stored user data.
-     *
-     * @param username the username of the user to be verified
-     * @param password the password for the user to be verified
-     * @return a ResponseEntity containing the user details and HTTP status 200 if verification is successful;
-     * returns HTTP status 401 if the credentials are invalid;
-     * returns an appropriate error response if an exception occurs.
-     */
     @CrossOrigin
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@RequestParam("username") String username,
-                                        @RequestParam("password") String password) {
+                                        @RequestParam("password") String password,
+                                        HttpServletResponse response) {
         try {
             Optional<User> userOptional = userService.findUserByUsername(username);
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
-                boolean isPasswordValid = passwordService.verifyPassword(user.getPassword(), password);
+                if (passwordService.verifyPassword(user.getPassword(), password)) {
+                    String token = generateJwtToken(user);
 
-                if (isPasswordValid) {
-                    return new ResponseEntity<>(user, HttpStatus.OK);
+                    Cookie authCookie = new Cookie("auth-token", token);
+                    authCookie.setHttpOnly(true);
+                    authCookie.setSecure(true);
+                    authCookie.setPath("/");
+                    authCookie.setMaxAge(7 * 24 * 60 * 60);
+
+
+                    String sameSiteCookie = String.format("%s; %s",
+                            authCookie.toString(), "SameSite=Strict");
+                    response.addHeader("Set-Cookie", sameSiteCookie);
+                    
+                    user.setPassword(null);
+
+                    return ResponseEntity.ok()
+                            .body(new HashMap<String, Object>() {{
+                                put("user", user);
+                                put("message", "Login erfolgreich");
+                            }});
                 }
             }
 
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new HashMap<String, String>() {{
+                        put("message", "Ungültige Anmeldedaten");
+                    }});
+
         } catch (Exception e) {
             return createExceptionResponse(e);
         }
     }
+
+    @CrossOrigin
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie authCookie = new Cookie("auth-token", null);
+        authCookie.setHttpOnly(true);
+        authCookie.setSecure(true);
+        authCookie.setPath("/");
+        authCookie.setMaxAge(0);
+
+        String sameSiteCookie = String.format("%s; %s",
+                authCookie.toString(), "SameSite=Strict");
+        response.addHeader("Set-Cookie", sameSiteCookie);
+
+        return ResponseEntity.ok()
+                .body(new HashMap<String, String>() {{
+                    put("message", "Erfolgreich ausgeloggt");
+                }});
+    }
+
+    private String generateJwtToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .claim("userId", user.getId())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode("SkillyWilly");
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
 
     /**
      * Retrieves a list of all usernames.

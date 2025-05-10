@@ -3,8 +3,11 @@ package org.backend.skillywilly.controller;
 import org.backend.skillywilly.model.Message;
 import org.backend.skillywilly.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.backend.skillywilly.util.GeneralHelper.createExceptionResponse;
 import static org.backend.skillywilly.util.GeneralHelper.createOkResponse;
@@ -99,4 +102,27 @@ public class MessageController {
             return createExceptionResponse(e);
         }
     }
+
+    /**
+     * Retrieves all messages that a user has sent or received.
+     * This endpoint returns the complete message history for a specific user,
+     * including both sent and received messages, ordered by creation time.
+     *
+     * @param userId The ID of the user whose messages should be retrieved
+     * @return ResponseEntity containing:
+     * - List of messages and HTTP status 200 (OK) if successful
+     * - HTTP status 404 (NOT_FOUND) if the user doesn't exist
+     * - HTTP status 500 (INTERNAL_SERVER_ERROR) for other errors
+     */
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<?> getAllUserMessages(@PathVariable("userId") Long userId) {
+        try {
+            List<Message> messages = messageService.getAllUserMessages(userId);
+            return new ResponseEntity<>(messages, HttpStatus.OK);
+        } catch (Exception e) {
+            return createExceptionResponse(e);
+        }
+    }
+
+
 }
