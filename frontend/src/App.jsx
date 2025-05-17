@@ -26,7 +26,32 @@ function App() {
       // if session is valid, set session
       // if session is not valid, set user to null
       setIsLoading(true);
-      console.log("Checking session...");
+      const formdata = new FormData();
+      formdata.append("username", "test");
+      formdata.append("password", "test");
+
+      const requestOptions = {
+        method: "POST",
+        body: formdata,
+        credentials: "include",
+        redirect: "follow"
+      };
+
+      fetch("/api/users/verify", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          if(result.message !== "Login erfolgreich"){
+            setUser(null);
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setUser(null);
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        });
       setIsLoading(false)
     }
   }, [user, session]);
@@ -42,10 +67,10 @@ function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="Dashboard" element={<Dashboard user={user} />} />
+              <Route path="*" element={<Dashboard user={user} />} />
               <Route path="UserSettings" element={<UserSettings user={user} />} />
               <Route path="MySkilly" element={<MySkilly user={user} />} />
-              <Route path="*" element={<div className='text-center mt-5'><img style={{width: "250px"}} src="./404.png" /></div>} />
+              {/* <Route path="*" element={<div className='text-center mt-5'><img style={{width: "250px"}} src="./404.png" /></div>} /> */}
             </>
           ) : (
             <>

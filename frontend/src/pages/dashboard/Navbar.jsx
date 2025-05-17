@@ -6,7 +6,28 @@ function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
 	const [showUserContextMenu, setShowUserContextMenu] = useState(false);
 
     const logout = () => {
-
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+        // delete httpOnly cookie
+        fetch("/api/users/logout", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     }
     return (
         <div className='row my-2'>
