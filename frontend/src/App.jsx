@@ -14,17 +14,12 @@ const MySkilly = lazy(() =>  import('./pages/MySkilly'))
 const Login = lazy(() =>  import('./pages/Login'))
 
 function App() {
-  const [user, setUser] = useState(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null);
-  const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     //check Session
-    if(user != null && session == null){
-      //check if session is still valid
-      // if session is valid, set session
-      // if session is not valid, set user to null
       setIsLoading(true);
       const formdata = new FormData();
       formdata.append("username", "test");
@@ -41,25 +36,26 @@ function App() {
         .then((response) => response.json())
         .then((result) => {
           if(result.message !== "Login erfolgreich"){
-            setUser(null);
-            localStorage.removeItem("user");
-            window.location.href = "/login";
+            // setUser(null);
+            // localStorage.removeItem("user");
+            // window.location.href = "/login";
+          }else{ console.log(result, result.user)
+            setUser(result.user);
           }
+          setIsLoading(false)
         })
         .catch((error) => {
           console.error(error);
-          setUser(null);
-          localStorage.removeItem("user");
-          window.location.href = "/login";
+          // setUser(null);
+          // localStorage.removeItem("user");
+          // window.location.href = "/login";
         });
-      setIsLoading(false)
-    }
-  }, [user, session]);
+  }, []);
 
   if(isLoading){
     return (<LoadingBar />)
   }
-  
+
   return (
     <>
     <ErrorBoundary>
