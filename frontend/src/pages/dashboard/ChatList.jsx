@@ -15,7 +15,7 @@ function ChatList({setShowChat,currentUser, chats, users, setShowElement}) {
     if(loading){
         return (<LoadingBar />)
     }
-    if(chats === undefined || chats.length === 0){
+    if(chats === undefined || chats.length === 0 || users === undefined || users.length === 0){
         return (
             <LoadingBar />
         )
@@ -24,12 +24,31 @@ function ChatList({setShowChat,currentUser, chats, users, setShowElement}) {
     console.log("ChatList", chats, users, currentUser);
     chats.forEach(chat => {
         if(chatList[chat.userToId] === undefined && currentUser.id !== chat.userToId){
-            chatList[chat.userToId] = 
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={users[chat.userToId].username} chatname={chat.message} lastmessage={"test"} time={"12:30"}/>
+            if(users[chat.userToId] === undefined){
+                return;
+            }
+            chatList[chat.userToId] = <ChatItem 
+            id={chat.userToId} 
+            setShowChat={setShowChat} 
+            setShowElement={setShowElement} 
+            name={"users[chat.userToId].username"} 
+            chatname={chat.message} 
+            lastmessage={"test"} 
+            time={"12:30"}/>
         }
         if(chatList[chat.userFromId] === undefined && currentUser.id !== chat.userFromId){
+            if(users[chat.userFromId] === undefined){
+                return;
+            }
             chatList[chat.userFromId] = 
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={users[chat.userFromId].username} chatname={chat.message} lastmessage={"test"} time={"12:30"}/>
+            <ChatItem 
+            id={chat.userFromId} 
+            setShowChat={setShowChat} 
+            setShowElement={setShowElement} 
+            name={users[chat.userFromId].username} 
+            chatname={chat.message} 
+            lastmessage={"test"} 
+            time={"12:30"}/>
         }
     })
 
@@ -41,9 +60,9 @@ function ChatList({setShowChat,currentUser, chats, users, setShowElement}) {
     );
 }
 
-function ChatItem({setShowChat, setShowElement, name, chatname, lastmessage, time}) {
+function ChatItem({id, setShowChat, setShowElement, name, chatname, lastmessage, time}) {
     return (
-        <div className="chatListItem row clickable mb-2" onClick={() => {setShowChat(true); setShowElement(false)}}>
+        <div className="chatListItem row clickable mb-2" onClick={() => {setShowChat(id); setShowElement(false)}}>
             <div className='col'>
                 <div>
                     <strong>
