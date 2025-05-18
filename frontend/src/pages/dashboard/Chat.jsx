@@ -2,8 +2,40 @@ import React, { useEffect, useState } from "react";
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 
-function Chat({ name = "name", title = "title", style }) {
+function Chat({ currentUser, userId, users, chats, style }) {
   useEffect(() => {}, []);
+let name = users[userId].username;
+let title = "";
+
+let messages = [];
+let sortedChats = [...chats].sort((a, b) => {
+  return new Date(a.created) - new Date(b.created);
+});
+sortedChats.forEach((chat) => {
+    const t = new Date(chat.created);
+    let time = t.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+    let date = t.toLocaleDateString("de-AT")
+    
+    if (t.toLocaleDateString("de-AT") === new Date().toLocaleDateString("de-AT")) {
+        date = "";
+    }
+    if (chat.userFromId === userId) {
+      messages.push(<InComingMessage
+        message={chat.message}
+        time={date + " " + time}
+        />
+      );
+    } else if (chat.userToId === userId) {
+      messages.push(
+        <OutGoingMessage 
+          message={chat.message}
+          time={date + " " + time}
+          />);
+    }
+});
 
 return (
     <div style={{ ...style, height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -13,14 +45,7 @@ return (
             <hr />
         </div>
         <div className="overflow-auto flex-grow-1" style={{ flex: "1 1 auto", maxHeight: "78vh" }}>
-            <InComingMessage
-                time="02.05.2025 12:21"
-                message="Hello, how are you?"
-            />
-            <OutGoingMessage
-                time="02.05.2025 12:31"
-                message="I am fine, thank you!"
-            />
+          {messages}
            
         </div>
         <div style={{ flexShrink: 0 }}>
