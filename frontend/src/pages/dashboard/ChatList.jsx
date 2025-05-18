@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './ChatList.css';
 import LoadingBar from '../../components/LoadingBar';
 
-function ChatList({setShowChat, setShowElement}) {
-    const [chats, setChats] = useState([]);
+function ChatList({setShowChat,currentUser, chats, users, setShowElement}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [search, setSearch] = useState("");
@@ -16,30 +15,29 @@ function ChatList({setShowChat, setShowElement}) {
     if(loading){
         return (<LoadingBar />)
     }
+    if(chats === undefined || chats.length === 0){
+        return (
+            <LoadingBar />
+        )
+    }
+    let chatList = [];
+    console.log("ChatList", chats, users, currentUser);
+    chats.forEach(chat => {
+        if(chatList[chat.userToId] === undefined && currentUser.id !== chat.userToId){
+            chatList[chat.userToId] = 
+            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={users[chat.userToId].username} chatname={chat.message} lastmessage={"test"} time={"12:30"}/>
+        }
+        if(chatList[chat.userFromId] === undefined && currentUser.id !== chat.userFromId){
+            chatList[chat.userFromId] = 
+            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={users[chat.userFromId].username} chatname={chat.message} lastmessage={"test"} time={"12:30"}/>
+        }
+    })
 
     return (
         <div>
             Chats
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Oliver"} chatname={"SkillyWilly"} lastmessage={"test"} time={"12:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Selina"} chatname={"SkillyWilly"} lastmessage={"test"} time={"05.04.2025"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Nicole"} chatname={"SkillyWilly"} lastmessage={"test"} time={"06.04.2024"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-            <ChatItem setShowChat={setShowChat} setShowElement={setShowElement} name={"Markus"} chatname={"SkillyWilly"} lastmessage={"test"} time={"15:30"}/>
-        </div>
+            {chatList}
+            </div>
     );
 }
 

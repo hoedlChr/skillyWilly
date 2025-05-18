@@ -18,6 +18,7 @@ function Dashboard({user, setUser}) {
     const [chatList, setChatList] = useState([1]);
 
     const [data, setData] = useState([]);
+    const [chats, setChats] = useState([]);
     const [users, setUsers] = useState({});
     const [allUserData, setAllUserData] = useState({});
 
@@ -85,9 +86,8 @@ function Dashboard({user, setUser}) {
             return res.json();
         })
         .then((data) => {
-            console.log(data);
-            setData(data.skills);
-            setAllUserData(data);
+            let sortedData = data.sort((a, b) => new Date(b.created) - new Date(a.created));
+            setChats(sortedData);
             // Fetch users
             data.forEach(element => {
                 findUser(element.userFromId);
@@ -137,7 +137,7 @@ function Dashboard({user, setUser}) {
                     chatList.length > 0 ?
                     <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
                         <div className="row">
-                            <ChatList setShowChat={setShowChat} setShowElement={setShowElement}/>
+                            <ChatList setShowChat={setShowChat} currentUser={allUserData} chats={chats} users={users} setShowElement={setShowElement}/>
                         </div>
                     </div>:null
                 }
