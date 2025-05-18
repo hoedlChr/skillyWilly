@@ -19,11 +19,14 @@ function Dashboard({user, setUser}) {
 
     const [data, setData] = useState([]);
     const [users, setUsers] = useState({});
+    const [allUserData, setAllUserData] = useState({});
 
     const height = 90;
     useEffect(() => {
+// Fetch all skills
         fetch(`/api/skills`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -36,33 +39,9 @@ function Dashboard({user, setUser}) {
         })
         .then((data) => {
             setData(data);
-
             // Fetch users
             data.forEach(element => {
-                if (users[element.userId]) {
-                    return;
-                }
-                fetch(`/api/users/${element.userId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                .then((res) => {
-                    if (!res.ok) {
-                        throw new Error(`HTTP error! status: ${res.status}`);
-                    }
-                    return res.json();
-                })
-                .then((data) => {
-                    setUsers((prevUsers) => ({
-                        ...prevUsers,
-                        [element.userId]: data,
-                    }));
-                })
-                .catch((err) => {
-                    console.error("Error fetching skills:", err);
-                });
+                findUser(element.userId);
             });
 
         })
@@ -70,7 +49,83 @@ function Dashboard({user, setUser}) {
             console.error("Error fetching skills:", err);
         });
 
+//get all User data 
+        fetch(`/api/users/${user.id}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            setData(data.skills);
+            setAllUserData(data);
+        })
+        .catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+
+// get messages from/to user
+        fetch(`/api/messages/all/${user.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            console.log(data);
+            setData(data.skills);
+            setAllUserData(data);
+            // Fetch users
+            data.forEach(element => {
+                findUser(element.userFromId);
+                findUser(element.userToId);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+
     }, []);
+
+    const findUser = (userId) => {
+        if (users[userId]) {
+            return;
+        }
+        fetch(`/api/users/${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            setUsers((prevUsers) => ({
+                ...prevUsers,
+                [userId]: data,
+            }));
+        })
+        .catch((err) => {
+            console.error("Error fetching skills:", err);
+        });
+    };
 
     return (<>
         <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
