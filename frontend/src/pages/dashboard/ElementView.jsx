@@ -19,7 +19,6 @@ function ElementView({id, data, users}) {
         setDescription(element.body);
     },[id])
 
-    console.log(id, data, users)
     return (
         <div className='mt-4'>
             <h2>{title}</h2>

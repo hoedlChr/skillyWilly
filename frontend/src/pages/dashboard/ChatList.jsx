@@ -21,34 +21,43 @@ function ChatList({setShowChat,currentUser, chats, users, setShowElement}) {
         )
     }
     let chatList = [];
-    console.log("ChatList", chats, users, currentUser);
-    chats.forEach(chat => {
+    chats.forEach((chat, index) => {
+        const t = new Date(chat.created);
+        let time = t.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        let date = t.toLocaleDateString("de-AT")
+        
+        if (t.toLocaleDateString("de-AT") === new Date().toLocaleDateString("de-AT")) {
+            date = "";
+        }
         if(chatList[chat.userToId] === undefined && currentUser.id !== chat.userToId){
             if(users[chat.userToId] === undefined){
                 return;
             }
-            chatList[chat.userToId] = <ChatItem 
+            chatList[chat.userToId] = <ChatItem key={"chatItem" + index}
             id={chat.userToId} 
             setShowChat={setShowChat} 
             setShowElement={setShowElement} 
-            name={"users[chat.userToId].username"} 
+            name={users[chat.userToId].username} 
             chatname={chat.message} 
             lastmessage={"test"} 
-            time={"12:30"}/>
+            time={date + " " + time}/>
         }
         if(chatList[chat.userFromId] === undefined && currentUser.id !== chat.userFromId){
             if(users[chat.userFromId] === undefined){
                 return;
             }
             chatList[chat.userFromId] = 
-            <ChatItem 
+            <ChatItem  key={"chatItem" + index}
             id={chat.userFromId} 
             setShowChat={setShowChat} 
             setShowElement={setShowElement} 
             name={users[chat.userFromId].username} 
             chatname={chat.message} 
             lastmessage={"test"} 
-            time={"12:30"}/>
+            time={date + " " + time}/>
         }
     })
 

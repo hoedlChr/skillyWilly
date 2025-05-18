@@ -30,11 +30,10 @@ function CreateSkill({ show, setShow, user}) {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data);
 				cancel();
 			})
 			.catch((err) => {
-				console.log(err);y
+				console.log(err);
 			});
 	}
 

@@ -7,7 +7,7 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement,us
 
     const clickChat = (e) => {
         e.stopPropagation();
-        setShowChat(true);
+        setShowChat(creatorId);
         setShowElement(false);
     }
 
@@ -38,7 +38,6 @@ function ElementItem({mySkilly=false,setShowChat, setShowElement, showElement,us
 		})
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
         })
         .catch((err) => {
             console.log(err);

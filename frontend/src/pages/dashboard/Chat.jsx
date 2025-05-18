@@ -11,7 +11,7 @@ let messages = [];
 let sortedChats = [...chats].sort((a, b) => {
   return new Date(a.created) - new Date(b.created);
 });
-sortedChats.forEach((chat) => {
+sortedChats.forEach((chat, index) => {
     const t = new Date(chat.created);
     let time = t.toLocaleTimeString([], {
         hour: "2-digit",
@@ -23,19 +23,38 @@ sortedChats.forEach((chat) => {
         date = "";
     }
     if (chat.userFromId === userId) {
-      messages.push(<InComingMessage
+      messages.push(<InComingMessage key={"chatMessage" + index}
         message={chat.message}
         time={date + " " + time}
         />
       );
     } else if (chat.userToId === userId) {
       messages.push(
-        <OutGoingMessage 
+        <OutGoingMessage key={"chatMessage" + index}
           message={chat.message}
           time={date + " " + time}
           />);
     }
 });
+
+const sendMessage = () => {
+  const formdata = new FormData();
+  formdata.append("senderId", "29");
+  formdata.append("recipientId", "36");
+  formdata.append("content", "Guten tag ich hätte gern");
+
+  const requestOptions = {
+    method: "POST",
+    body: formdata,
+    credentials: "include",
+    redirect: "follow"
+  };
+
+  fetch("/api/messages", requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+}
 
 return (
     <div style={{ ...style, height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -54,7 +73,7 @@ return (
                     <InputField placeholder="Type a message..." />
                 </div>
                 <div className="col-2">
-                    <Button className="btn btn-primary">Send</Button>
+                    <Button className="btn btn-primary" onClick={() => sendMessage()}>Send</Button>
                 </div>
             </div>
         </div>

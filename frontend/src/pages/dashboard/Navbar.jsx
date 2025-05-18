@@ -23,7 +23,6 @@ function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
             return res.json();
         })
         .then((data) => {
-            console.log(data);
         })
         .catch((err) => {
             console.log(err);
