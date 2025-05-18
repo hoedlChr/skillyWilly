@@ -59,7 +59,6 @@ function CreateAccount() {
                 window.location.href = "/login";
             } else {
                 //show error message
-                console.log(data);
             }
         }).finally(() => {
             setIsLoading(false);

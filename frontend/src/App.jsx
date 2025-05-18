@@ -39,7 +39,7 @@ function App() {
             // setUser(null);
             // localStorage.removeItem("user");
             // window.location.href = "/login";
-          }else{ console.log(result, result.user)
+          }else{ 
             setUser(result.user);
           }
           setIsLoading(false)

@@ -15,7 +15,9 @@ function Dashboard({user, setUser}) {
     const [showElement, setShowElement] = useState(false);
     const [showCreateSkill, setShowCreateSkill] = useState(false);
     const [showElementsOnMap, setShowElementsOnMap] = useState(false);
-    const [chatList, setChatList] = useState([1]);
+
+    const [smallViewChats, setSmallViewChats] = useState(false);
+    const [smallViewSkills, setSmallViewSkills] = useState(false);
 
     const [data, setData] = useState([]);
     const [chats, setChats] = useState([]);
@@ -101,6 +103,11 @@ function Dashboard({user, setUser}) {
 
     }, []);
 
+    useEffect(() => {
+        setSmallViewChats(false);
+        setSmallViewSkills(false);
+    }, [showChat, showElement]);
+
     const findUser = (userId) => {
         if (users[userId]) {
             return;
@@ -133,21 +140,51 @@ function Dashboard({user, setUser}) {
         <SkillOnMap data={data} users={users} show={showElementsOnMap} setShow={setShowElementsOnMap}/>
         <div className='container'>
             <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
-            <div className='row'>
+            <div className='d-block d-xl-none'>
                 {
-                    chatList.length > 0 ?
-                    <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
-                        <div className="row">
-                            <ChatList setShowChat={setShowChat} currentUser={allUserData} chats={chats} users={users} setShowElement={setShowElement}/>
+                    chats.length > 0 ?
+                    <div className="card border-primary mb-3">
+                        <div className='card-header border-primary bg-primary text-white clickable' onClick={()=>setSmallViewChats(!smallViewChats)}>
+                            <strong>Chats</strong>
+                            {
+                                smallViewChats ?
+                                <i className="bi bi-caret-down-fill float-end"></i>:
+                                <i className="bi bi-caret-left-fill float-end"></i>
+                            }
+                        </div>
+
+                    {
+                        smallViewChats ? 
+                        <div className="card-body border-primary">
+                            <div className={`col overflow-auto`}>
+                                    <ChatList setShowChat={setShowChat} currentUser={allUserData} chats={chats} users={users} setShowElement={setShowElement}/>
+                            </div>
+                        </div>:null
+                    }
+                    </div>:null
+                }
+
+                <div className="card border-primary mb-3">
+                    <div className='card-header border-primary bg-primary text-white clickable' onClick={()=>setSmallViewSkills(!smallViewSkills)}>
+                        <strong>Skills</strong>
+                        {
+                                smallViewSkills ?
+                                <i className="bi bi-caret-down-fill float-end"></i>:
+                                <i className="bi bi-caret-left-fill float-end"></i>
+                            }
+                    </div>
+                {
+                    smallViewSkills ? 
+                    <div className="card-body border-primary">
+                        <div className={`col overflow-auto`}>
+                            <ElementList data={data} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
                         </div>
                     </div>:null
                 }
-                <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
-                        <ElementList data={data} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
                 </div>
                 {
                     showChat === false && showElement === false ? null:
-                    <div className="col-4" style={{height: `${height}vh`}}>
+                    <div className="card">
                         {
                             showChat ?
                             <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height}vh`}} />:null
@@ -158,6 +195,35 @@ function Dashboard({user, setUser}) {
                         }
                     </div>
                 }
+
+            </div>
+            <div className='d-none d-xl-block'>
+                <div className='row'>
+                    {
+                        chats.length > 0 ?
+                        <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
+                            <div className="row">
+                                <ChatList setShowChat={setShowChat} currentUser={allUserData} chats={chats} users={users} setShowElement={setShowElement}/>
+                            </div>
+                        </div>:null
+                    }
+                    <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
+                            <ElementList data={data} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
+                    </div>
+                    {
+                        showChat === false && showElement === false ? null:
+                        <div className="col-4" style={{height: `${height}vh`}}>
+                            {
+                                showChat ?
+                                <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height}vh`}} />:null
+                            }
+                            {
+                                showElement ?
+                                <ElementView id={showElement} data={data} users={users}/> :null
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </>);
