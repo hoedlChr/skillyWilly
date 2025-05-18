@@ -4,16 +4,17 @@
 
 **Pfad:** `/api/users`
 
-| HTTP-Methode | Endpunkt     | Beschreibung                                                   |
-|--------------|--------------|----------------------------------------------------------------|
-| `POST`       | `/register`  | Erstellt einen neuen Benutzer                                  |
-| `GET`        | `/`          | Gibt alle Benutzer zurück                                      |
-| `GET`        | `/{id}`      | Gibt einen Benutzer anhand seiner ID zurück                    |
-| `PUT`        | `/{id}`      | Aktualisiert einen bestehenden Benutzer                        |
-| `DELETE`     | `/{id}`      | Löscht einen Benutzer                                          |
-| `POST`       | `/verify`    | Authentifiziert einen Benutzer und erstellt ein Session-Cookie |
-| `POST`       | `/logout`    | Beendet die Benutzersitzung und löscht das Session-Cookie      |
-| `GET`        | `/usernames` | Gibt alle Benutzernamen zurück                                 |
+| HTTP-Methode | Endpunkt     | Beschreibung                                                                 |
+|--------------|--------------|------------------------------------------------------------------------------|
+| `POST`       | `/register`  | Erstellt einen neuen Benutzer                                                |
+| `GET`        | `/`          | Gibt alle Benutzer zurück                                                    |
+| `GET`        | `/{id}`      | Gibt einen Benutzer anhand seiner ID zurück                                  |
+| `PUT`        | `/{id}`      | Aktualisiert einen bestehenden Benutzer                                      |
+| `DELETE`     | `/{id}`      | Löscht einen Benutzer                                                        |
+| `POST`       | `/login`     | Authentifiziert einen Benutzer und erstellt ein Session-Cookie mit JWT-Token |
+| `POST`       | `/verify`    | Überprüft die Gültigkeit des Session-Cookies (auth-token)                    |
+| `POST`       | `/logout`    | Beendet die Benutzersitzung und löscht das Session-Cookie                    |
+| `GET`        | `/usernames` | Gibt alle Benutzernamen zurück                                               |
 
 ## **2. UserDataController**
 

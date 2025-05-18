@@ -1,10 +1,12 @@
 package org.backend.skillywilly.controller;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.backend.skillywilly.model.User;
 import org.backend.skillywilly.service.PasswordService;
@@ -22,43 +24,20 @@ import java.util.Optional;
 
 import static org.backend.skillywilly.util.GeneralHelper.createExceptionResponse;
 
-/**
- * Rest Controller responsible for managing user-related operations.
- * Provides API endpoints for creating, retrieving, updating, and deleting user entities
- * and verifying user credentials.
- */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    /**
-     * An instance of UserService that handles business logic for user-related operations.
-     * This service manages the creation, retrieval, updating, and deletion of user entities,
-     * as well as user-specific functionality such as finding a user by their username.
-     * <p>
-     * This field is automatically injected by Spring's dependency injection container.
-     */
     @Autowired
     private UserService userService;
-    /**
-     * An instance of the PasswordService class that handles password-related functionality
-     * such as hashing and verifying passwords for user authentication processes.
-     * Utilized in the UserController class to ensure secure management of user credentials.
-     */
+
     @Autowired
     private PasswordService passwordService;
 
     // Signierungsschlüssel, sollte in einer echten Anwendung sicher gespeichert werden
     private static final Key SIGNING_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    /**
-     * Creates a new user account with the given user details.
-     * Validates the input, hashes the password, and stores the user in the system.
-     *
-     * @param user the user object containing details such as username, password, and email
-     * @return a {@code ResponseEntity} containing the created user object and a {@code 201 CREATED} status,
-     * or an error message with the appropriate HTTP status in case of failure
-     */
+
     @PostMapping(value = "/register")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
@@ -77,15 +56,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Retrieves a list of all users. Requires a valid authentication token.
-     *
-     * @param token    The authentication token from the cookie
-     * @param response The HTTP response object
-     * @return a ResponseEntity containing a list of all users with an HTTP status of 200 (OK)
-     * or a 401 UNAUTHORIZED if no valid token is provided.
-     * In the event of an error, returns an appropriate error response.
-     */
+
     @GetMapping
     public ResponseEntity<?> getAllUsers(@CookieValue(name = "auth-token", required = false) String token,
                                          HttpServletResponse response) {
@@ -104,14 +75,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Retrieves a user based on the provided user ID.
-     *
-     * @param id the ID of the user to retrieve
-     * @return a {@code ResponseEntity} containing the user object if found, or
-     * {@code HttpStatus.NOT_FOUND} if the user does not exist. Returns
-     * an appropriate error response if an exception occurs.
-     */
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id) {
         try {
@@ -123,14 +87,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Updates an existing user with the given information.
-     *
-     * @param id   The ID of the user to be updated.
-     * @param user The updated information for the user.
-     * @return A ResponseEntity containing the updated user and an HTTP status of OK if the update is successful,
-     * or an HTTP status of NOT_FOUND if the user with the provided ID does not exist.
-     */
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         try {
@@ -142,15 +99,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Deletes a user by their unique identifier.
-     *
-     * @param id The unique identifier of the user to be deleted.
-     * @return A {@code ResponseEntity} with the status:
-     * {@code HttpStatus.NO_CONTENT} if the user was successfully deleted,
-     * {@code HttpStatus.NOT_FOUND} if the user was not found,
-     * or an appropriate error response in case of an exception.
-     */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         try {
@@ -164,9 +113,84 @@ public class UserController {
 
     @CrossOrigin
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@RequestParam("username") String username,
-                                        @RequestParam("password") String password,
-                                        HttpServletResponse response) {
+    public ResponseEntity<?> verifyUser(HttpServletRequest request) {
+        try {
+            // Cookie aus der Request extrahieren
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new HashMap<String, String>() {{
+                            put("message", "Kein Auth-Token gefunden");
+                        }});
+            }
+
+            // Auth-Token Cookie suchen
+            String token = null;
+            for (Cookie cookie : cookies) {
+                if ("auth-token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+
+            if (token == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new HashMap<String, String>() {{
+                            put("message", "Kein Auth-Token gefunden");
+                        }});
+            }
+
+            // Token validieren
+            try {
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(getSigningKey())
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+                Long userId = claims.get("userId", Long.class);
+
+                // Benutzer aus der Datenbank abrufen
+                Optional<User> userOptional = userService.getUserById(userId);
+                if (!userOptional.isPresent() || !userOptional.get().getId().equals(userId)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new HashMap<String, String>() {{
+                                put("message", "Ungültiges Token");
+                            }});
+                }
+
+                User user = userOptional.get();
+                user.setPassword(null); // Passwort aus der Antwort entfernen
+
+                return ResponseEntity.ok()
+                        .body(new HashMap<String, Object>() {{
+                            put("user", user);
+                            put("message", "Token ist gültig");
+                        }});
+
+            } catch (ExpiredJwtException e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new HashMap<String, String>() {{
+                            put("message", "Token ist abgelaufen");
+                        }});
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new HashMap<String, String>() {{
+                            put("message", "Ungültiges Token");
+                        }});
+            }
+
+        } catch (Exception e) {
+            return createExceptionResponse(e);
+        }
+    }
+
+
+    @CrossOrigin
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestParam("username") String username,
+                                       @RequestParam("password") String password,
+                                       HttpServletResponse response) {
         try {
             Optional<User> userOptional = userService.findUserByUsername(username);
 
@@ -210,6 +234,7 @@ public class UserController {
             return createExceptionResponse(e);
         }
     }
+
 
     @CrossOrigin
     @PostMapping("/logout")
