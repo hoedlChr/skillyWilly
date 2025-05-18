@@ -106,6 +106,9 @@ function Dashboard({user, setUser}) {
     useEffect(() => {
         setSmallViewChats(false);
         setSmallViewSkills(false);
+        if(showChat === allUserData.id){
+            setShowChat(false);
+        }
     }, [showChat, showElement]);
 
     const findUser = (userId) => {
