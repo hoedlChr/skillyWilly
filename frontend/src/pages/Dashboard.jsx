@@ -86,7 +86,8 @@ function Dashboard({user, setUser}) {
             return res.json();
         })
         .then((data) => {
-            let sortedData = data.sort((a, b) => new Date(b.created) - new Date(a.created));
+            let sortedData = data.sort((a, b) => new Date(b.created) + new Date(a.created));
+            console.log(sortedData);
             setChats(sortedData);
             // Fetch users
             data.forEach(element => {
@@ -149,7 +150,7 @@ function Dashboard({user, setUser}) {
                     <div className="col-4" style={{height: `${height}vh`}}>
                         {
                             showChat ?
-                            <Chat style={{height: `${height}vh`}}/>:null
+                            <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height}vh`}} />:null
                         }
                         {
                             showElement ?
