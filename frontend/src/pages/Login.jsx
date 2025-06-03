@@ -1,4 +1,5 @@
 import React, { lazy, useEffect, useState } from 'react';
+import LoadingBar from '../components/LoadingBar';
 
 const StandardInputField = lazy(() => import('../components/StandardInputField'));
 const Button = lazy(() => import('../components/Button'));
@@ -6,6 +7,7 @@ const Button = lazy(() => import('../components/Button'));
 function Login({setUser}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = () => {
         const formdata = new FormData();
@@ -18,21 +20,24 @@ function Login({setUser}) {
         credentials: "include",
         redirect: "follow"
         };
-
-        fetch("/api/users/verify", requestOptions)
-        .then((response) => {console.log(response);return response.json()})
-        .then((result) => {
-            let data = {
-                username: username,
-                password: password,
-                id: result.id
-            };
-            setUser(data);
-            localStorage.setItem("user", JSON.stringify(data));
-            // naviagte to dashboard
-            window.location.href = "/Dashboard";
+        setLoading(true);
+        fetch("/api/users/login", requestOptions)
+        .then((response) => {
+            console.log(response);
+            if (response.status === 401) {
+                throw new Error("Unauthorized: Invalid username or password");
+            }
+            return response.json()
         })
-        .catch((error) => console.error(error));
+        .then((result) => {
+            setUser(result.user);
+        })
+        .catch((error) => {
+            console.error("Login failed:", error);
+            window.alert("Login failed. Please check your username and password.");
+        }).finally(() => {
+            setLoading(false);
+        })
     }
 
 
@@ -43,10 +48,10 @@ function Login({setUser}) {
                 label="Username"
                 id={"username"}
                 className={""}
-                readOnly={false}
                 placeholder={""}
                 value={username}
                 helptext={""}
+                readOnly={loading}
                 changeHandler={setUsername}
             />
             <StandardInputField 
@@ -54,17 +59,21 @@ function Login({setUser}) {
                 id={"password"}
                 type={"password"}
                 className={""}
-                readOnly={false}
                 placeholder={""}
                 value={password}
                 helptext={""}
+                readOnly={loading}
                 changeHandler={setPassword}
             />
-            <div className='d-grid'>
-                <Button onClick={() => {handleLogin()}} className="btn-primary my-2">Login</Button>
-                <a href={'/passwordForgotten'} className="btn btn-danger my-2">Forgot Password</a>
-                <a href={'/createAccount'} className="btn btn-success my-2">Create Account</a>
-            </div>
+            {
+                loading === true ?
+                <LoadingBar/>:
+                <div className='d-grid'>
+                    <Button onClick={() => {handleLogin()}}className="btn-primary my-2">Login</Button>
+                    <a href={'/passwordForgotten'} className="btn btn-danger my-2">Forgot Password</a>
+                    <a href={'/createAccount'} className="btn btn-success my-2">Create Account</a>
+                </div>
+            }
         </div>
     );
 }
