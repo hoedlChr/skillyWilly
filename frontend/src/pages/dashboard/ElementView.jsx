@@ -25,10 +25,21 @@ function ElementView({id, data, users}) {
             <h4>{name}</h4>
             <p>{ort}</p>
             <div className='text-end'>
-                <small >{created}</small>
+                <small>{created}</small>
             </div>
             <hr />
-            <div dangerouslySetInnerHTML={{__html: description}}/>
+            <div>
+                {description && (
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: description
+                                .replace(/&lt;/g, "<")
+                                .replace(/&gt;/g, ">")
+                                .replace(/&amp;/g, "&"),
+                        }}
+                    />
+                )}
+            </div>
         </div>
     );
 }
