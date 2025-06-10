@@ -22,8 +22,6 @@ function App() {
     //check Session
       setIsLoading(true);
       const formdata = new FormData();
-      formdata.append("username", "test");
-      formdata.append("password", "test");
 
       const requestOptions = {
         method: "POST",
@@ -35,20 +33,16 @@ function App() {
       fetch("/api/users/verify", requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          if(result.message !== "Login erfolgreich"){
-            // setUser(null);
-            // localStorage.removeItem("user");
-            // window.location.href = "/login";
-          }else{ 
+          if(result.hasOwnProperty("error")) {
+            throw new Error(result.error);
+          }
+          if(result.hasOwnProperty("user")){ 
             setUser(result.user);
           }
           setIsLoading(false)
         })
         .catch((error) => {
           console.error(error);
-          // setUser(null);
-          // localStorage.removeItem("user");
-          // window.location.href = "/login";
         });
   }, []);
 
