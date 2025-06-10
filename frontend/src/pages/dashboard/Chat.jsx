@@ -39,9 +39,10 @@ sortedChats.forEach((chat, index) => {
 
 const sendMessage = () => {
   const formdata = new FormData();
-  formdata.append("senderId", "29");
-  formdata.append("recipientId", "36");
-  formdata.append("content", "Guten tag ich hätte gern");
+  formdata.append("userFromId", "31");
+  formdata.append("userToId", "30");
+  formdata.append("message", "Guten tag ich hätte gern");
+  formdata.append("created", new Date().toISOString().slice(0, 19));
 
   const requestOptions = {
     method: "POST",
@@ -57,18 +58,23 @@ const sendMessage = () => {
 }
 
 return (
-    <div style={{ ...style, height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ ...style,  display: "flex", flexDirection: "column" }}>
         <div className="row">
             <h2>{name}</h2>
             <h4>{title}</h4>
-            <hr />
+            <div className="mv-2">
+                <hr/>
+            </div>
         </div>
-        <div className="overflow-auto flex-grow-1" style={{ flex: "1 1 auto", maxHeight: "78vh" }}>
+        <div className="overflow-auto" style={{ flex: 1, height: "100%", maxHeight: "calc(100vh - 200px)" }}>
           {messages}
            
         </div>
-        <div style={{ flexShrink: 0 }}>
+        <div>
             <div className="row">
+              <div className="mv-2">
+                <hr/>
+              </div>
                 <div className="col-10">
                     <InputField placeholder="Type a message..." />
                 </div>
