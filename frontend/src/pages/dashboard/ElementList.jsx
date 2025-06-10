@@ -15,9 +15,16 @@ function ElementList({mySkilly=false, data, users, user, setShowChat, setShowEle
     if(loading){
         return (<LoadingBar />)
     }
-    if(data === undefined || data.length === 0){
+    if(data === undefined){
         return (
             <LoadingBar />
+        )
+    }
+    if(data.length === 0){
+        return (
+            <div>
+                No elements found.
+            </div>
         )
     }
     return (

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
+import InputField from '../../components/InputField';
 
-function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
+function Navbar({text, search, setSearch, setShowCreateSkill, setShowElementsOnMap}) {
 	const [showUserContextMenu, setShowUserContextMenu] = useState(false);
 
     const logout = () => {
@@ -29,10 +30,24 @@ function Navbar({text, setShowCreateSkill, setShowElementsOnMap}) {
         });
     }
     return (
-        <div className='row my-2'>
+        <div className='row my-4'>
                 <div className="col">
                     <h2><a style={{color: "black", textDecoration: "none"}} href="/Dashboard">{text}</a></h2>
                 </div>
+                { search === undefined ? null:
+                <div className="col-4">
+                    <div className="d-flex justify-content-center">
+                        <InputField 
+                            type="text" 
+                            className="form-control" 
+                            placeholder="Search..." 
+                            value={search} 
+                            changeHandler={setSearch}
+                        />
+                    </div>
+                    </div>
+                }
+
                 <div className="col-4 text-end">
                     <div className="d-flex justify-content-end gap-2">
                         {

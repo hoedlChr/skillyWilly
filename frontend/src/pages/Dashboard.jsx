@@ -24,6 +24,8 @@ function Dashboard({user, setUser}) {
     const [users, setUsers] = useState({});
     const [allUserData, setAllUserData] = useState({});
 
+    const [search, setSearch] = useState("");
+
     const height = 90;
     useEffect(() => {
 // Fetch all skills
@@ -137,12 +139,30 @@ function Dashboard({user, setUser}) {
             console.error("Error fetching skills:", err);
         });
     };
-
+    let filteredData = data
+    if(data !== undefined && data.length > 0){
+        filteredData = data.filter((element) => {
+            if (search === "") {
+                return true;
+            }
+            let ort = "";
+            if (users[element.userId] !== undefined && users[element.userId].hasOwnProperty("location") === true) {
+                ort = users[element.userId].location.display_name;
+            }
+            let username = "";
+            if (users[element.userId] !== undefined && users[element.userId].hasOwnProperty("username") === true) {
+                username = users[element.userId].username;
+            }
+            return element.subject.toLowerCase().includes(search.toLowerCase()) || 
+                ort.toLowerCase().includes(search.toLowerCase()) || 
+                username.toLowerCase().includes(search.toLowerCase());
+        })
+    }
     return (<>
         <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
         <SkillOnMap data={data} users={users} show={showElementsOnMap} setShow={setShowElementsOnMap}/>
         <div className='container'>
-            <Navbar text="Dashboard" setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
+            <Navbar text="Dashboard" search={search} setSearch={setSearch} setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
             <div className='d-block d-xl-none'>
                 {
                     chats.length > 0 ?
@@ -180,7 +200,7 @@ function Dashboard({user, setUser}) {
                     smallViewSkills ? 
                     <div className="card-body border-primary">
                         <div className={`col overflow-auto`}>
-                            <ElementList data={data} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
+                            <ElementList data={filteredData} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
                         </div>
                     </div>:null
                 }
@@ -194,7 +214,7 @@ function Dashboard({user, setUser}) {
                         }
                         {
                             showElement ?
-                            <ElementView id={showElement} data={data} users={users}/> :null
+                            <ElementView id={showElement} data={filteredData} users={users}/> :null
                         }
                     </div>
                 }
@@ -211,7 +231,7 @@ function Dashboard({user, setUser}) {
                         </div>:null
                     }
                     <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
-                            <ElementList data={data} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
+                            <ElementList data={filteredData} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
                     </div>
                     {
                         showChat === false && showElement === false ? null:
@@ -222,7 +242,7 @@ function Dashboard({user, setUser}) {
                             }
                             {
                                 showElement ?
-                                <ElementView id={showElement} data={data} users={users}/> :null
+                                <ElementView id={showElement} data={filteredData} users={users}/> :null
                             }
                         </div>
                     }
