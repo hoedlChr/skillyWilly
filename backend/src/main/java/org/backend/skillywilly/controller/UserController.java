@@ -37,7 +37,7 @@ public class UserController {
     // Signierungsschlüssel, sollte in einer echten Anwendung sicher gespeichert werden
     private static final Key SIGNING_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-
+    @CrossOrigin
     @PostMapping(value = "/register")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
@@ -56,7 +56,7 @@ public class UserController {
         }
     }
 
-
+    @CrossOrigin
     @GetMapping
     public ResponseEntity<?> getAllUsers(@CookieValue(name = "auth-token", required = false) String token,
                                          HttpServletResponse response) {
@@ -75,7 +75,7 @@ public class UserController {
         }
     }
 
-
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id) {
         try {
@@ -87,7 +87,7 @@ public class UserController {
         }
     }
 
-
+    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         try {
@@ -99,7 +99,7 @@ public class UserController {
         }
     }
 
-
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         try {
@@ -259,13 +259,7 @@ public class UserController {
                     put("message", "Erfolgreich ausgeloggt");
                 }});
     }
-
-    /**
-     * Generiert ein JWT-Token für den angegebenen Benutzer.
-     *
-     * @param user Der Benutzer, für den das Token generiert werden soll
-     * @return Das generierte JWT-Token als String
-     */
+    
     private String generateJwtToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
@@ -276,21 +270,10 @@ public class UserController {
                 .compact();
     }
 
-    /**
-     * Gibt den Signierungsschlüssel für JWT-Tokens zurück.
-     *
-     * @return Der Signierungsschlüssel
-     */
     private Key getSigningKey() {
         return SIGNING_KEY;
     }
 
-    /**
-     * Validiert ein JWT-Token.
-     *
-     * @param token Das zu validierende Token
-     * @return true, wenn das Token gültig ist, andernfalls false
-     */
     private boolean validateToken(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
@@ -306,12 +289,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Retrieves a list of all usernames.
-     *
-     * @return a ResponseEntity containing a list of usernames with an HTTP status of 200 (OK).
-     * In the event of an error, returns an appropriate error response.
-     */
+    @CrossOrigin
     @GetMapping("/usernames")
     public ResponseEntity<?> getAllUsernames() {
         try {

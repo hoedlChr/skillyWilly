@@ -16,6 +16,7 @@ import java.util.Map;
 public class LikeSkillController {
     private final LikeSkillService likeSkillService;
 
+    @CrossOrigin
     @PostMapping("/like")
     public ResponseEntity<LikeSkill> likeSkill(
             @RequestParam Long userId,
@@ -23,6 +24,7 @@ public class LikeSkillController {
         return ResponseEntity.ok(likeSkillService.saveLike(userId, skillId));
     }
 
+    @CrossOrigin
     @DeleteMapping("/unlike")
     public ResponseEntity<Void> unlikeSkill(
             @RequestParam Long userId,
@@ -31,11 +33,13 @@ public class LikeSkillController {
         return ResponseEntity.ok().build();
     }
 
+    @CrossOrigin
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Long>> getLikedSkillsByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(likeSkillService.findSkillIdsByUserId(userId));
     }
 
+    @CrossOrigin
     @GetMapping("/skill/{skillId}")
     public ResponseEntity<Map<String, Object>> getSkillLikeInfo(@PathVariable Long skillId) {
         return ResponseEntity.ok(Map.of(
@@ -44,6 +48,7 @@ public class LikeSkillController {
         ));
     }
 
+    @CrossOrigin
     @GetMapping("/check")
     public ResponseEntity<Boolean> checkUserLikedSkill(
             @RequestParam Long userId,
