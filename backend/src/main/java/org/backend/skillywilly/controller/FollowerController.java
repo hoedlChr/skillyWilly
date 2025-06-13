@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import static org.backend.skillywilly.util.GeneralHelper.createExceptionResponse;
 import static org.backend.skillywilly.util.GeneralHelper.createOkResponse;
 
-/**
- * Controller for managing follower and following relationships between users.
- * Handles HTTP requests related to following/unfollowing users and retrieving followers/followings.
- */
 @RestController
 @RequestMapping(FollowerController.API_BASE_PATH)
 public class FollowerController {
@@ -23,12 +19,7 @@ public class FollowerController {
     @Autowired
     private FollowerService followerService;
 
-    /**
-     * Follow a user.
-     *
-     * @param follower Contains the follower and following user details.
-     * @return Created follower relationship or Bad Request if input is invalid.
-     */
+    @CrossOrigin
     @PostMapping
     public ResponseEntity<?> followUser(@RequestBody Follower follower) {
         if (follower == null || follower.getUserFollowedId() == null || follower.getUserFollowerId() == null) {
@@ -41,13 +32,7 @@ public class FollowerController {
         }
     }
 
-    /**
-     * Unfollow a user based on followerId and followingId.
-     *
-     * @param followerId  ID of the user who is unfollowing.
-     * @param followingId ID of the user being unfollowed.
-     * @return No content if successful, or Bad Request if input is invalid.
-     */
+    @CrossOrigin
     @DeleteMapping
     public ResponseEntity<?> unfollowUser(
             @RequestParam(name = "followerId") Long followerId,
@@ -63,12 +48,7 @@ public class FollowerController {
         }
     }
 
-    /**
-     * Get followers of a specific user.
-     *
-     * @param userId ID of the user whose followers should be retrieved.
-     * @return List of followers as response or Bad Request if input is invalid.
-     */
+    @CrossOrigin
     @GetMapping("/{userId}/followers")
     public ResponseEntity<?> getFollowers(@PathVariable(name = "userId") Long userId) {
         if (userId == null) {
@@ -81,12 +61,7 @@ public class FollowerController {
         }
     }
 
-    /**
-     * Get users a specific user is following.
-     *
-     * @param userId ID of the user whose followings should be retrieved.
-     * @return List of followings as response or Bad Request if input is invalid.
-     */
+    @CrossOrigin
     @GetMapping("/{userId}/following")
     public ResponseEntity<?> getFollowing(@PathVariable(name = "userId") Long userId) {
         if (userId == null) {

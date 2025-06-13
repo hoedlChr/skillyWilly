@@ -10,30 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import static org.backend.skillywilly.util.GeneralHelper.createExceptionResponse;
 import static org.backend.skillywilly.util.GeneralHelper.createOkResponse;
 
-/**
- * A REST controller for managing Skill entities.
- * Provides endpoints to create, read, update, and delete skills.
- */
 @RestController
 @RequestMapping("/api/skills")
 @RequiredArgsConstructor
 public class SkillController {
-
-    /**
-     * A service dependency for managing Skill entities.
-     * This instance is used to handle operations such as creating, retrieving,
-     * updating, and deleting skills within the SkillController.
-     * The SkillService provides the business logic implementation for these operations.
-     */
     private final SkillService skillService;
 
-    /**
-     * Creates a new Skill entity and saves it to the database.
-     *
-     * @param skill the Skill object to be created and persisted. Must not be null.
-     * @return a ResponseEntity containing the created Skill in the response body with a status of OK if successful,
-     * or a ResponseEntity with an error message and appropriate HTTP status if an error occurs.
-     */
+    @CrossOrigin
     @PostMapping
     public ResponseEntity<?> createSkill(@RequestBody Skill skill) {
         if (skill == null) {
@@ -46,14 +29,7 @@ public class SkillController {
         }
     }
 
-    /**
-     * Retrieves a skill by its unique identifier.
-     *
-     * @param id The unique identifier of the skill to retrieve.
-     * @return A {@link ResponseEntity} containing the skill details if found,
-     * a bad request response if the identifier is null, or an error
-     * response in case of an exception.
-     */
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> getSkillById(@PathVariable Long id) {
         if (id == null) {
@@ -66,12 +42,7 @@ public class SkillController {
         }
     }
 
-    /**
-     * Retrieves all skills.
-     *
-     * @return a ResponseEntity containing a list of all skills if successful,
-     * or an appropriate error response in case of an exception.
-     */
+    @CrossOrigin
     @GetMapping
     public ResponseEntity<?> getAllSkills() {
         try {
@@ -81,14 +52,7 @@ public class SkillController {
         }
     }
 
-    /**
-     * Updates an existing skill with the provided details.
-     *
-     * @param id           the ID of the skill to update
-     * @param skillDetails the updated details of the skill
-     * @return a ResponseEntity containing the updated skill if successful,
-     * or an appropriate HTTP status in case of an error
-     */
+    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSkill(@PathVariable Long id, @RequestBody Skill skillDetails) {
         if (id == null || skillDetails == null) {
@@ -101,15 +65,7 @@ public class SkillController {
         }
     }
 
-    /**
-     * Deletes a skill by its unique identifier.
-     *
-     * @param id the unique identifier of the skill to be deleted
-     * @return a ResponseEntity indicating the result of the operation;
-     * returns an HTTP 200 OK status with a boolean result if successful,
-     * an HTTP 400 Bad Request if the input is invalid,
-     * or an HTTP 500 Internal Server Error if an exception occurs during the operation
-     */
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSkill(@PathVariable Long id) {
         if (id == null) {

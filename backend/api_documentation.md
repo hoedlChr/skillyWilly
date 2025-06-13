@@ -66,10 +66,10 @@
 
 **Pfad:** `/api/messages`
 
-| HTTP-Methode | Endpunkt        | Beschreibung                                                            |
-|--------------|-----------------|-------------------------------------------------------------------------|
-| `POST`       | `/`             | Erstellt eine neue Nachricht                                            |
-| `GET`        | `/`             | Gibt alle Nachrichten zurück                                            |
-| `GET`        | `/{id}`         | Gibt eine Nachricht anhand ihrer ID zurück                              |
-| `GET`        | `/all/{userId}` | Gibt alle gesendeten und empfangenen Nachrichten eines Benutzers zurück |
-| `DELETE`     | `/{id}`         | Löscht eine Nachricht anhand ihrer ID                                   |
+| HTTP-Methode | Endpunkt                   | Beschreibung                                                                  |
+|--------------|----------------------------|-------------------------------------------------------------------------------|
+| `POST`       | `/{fromUserId}/{toUserId}` | Erstellt eine neue Nachricht mit Absender- und Empfänger-ID als Pfadparameter |
+| `GET`        | `/`                        | Gibt alle Nachrichten zurück                                                  |
+| `GET`        | `/{id}`                    | Gibt eine Nachricht anhand ihrer ID zurück                                    |
+| `GET`        | `/all/{userId}`            | Gibt alle gesendeten und empfangenen Nachrichten eines Benutzers zurück       |
+| `DELETE`     | `/{id}`                    | Löscht eine Nachricht anhand ihrer ID                                         |
