@@ -9,18 +9,18 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.backend.skillywilly.model.User;
+import org.backend.skillywilly.service.EmailService;
 import org.backend.skillywilly.service.PasswordService;
 import org.backend.skillywilly.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Key;
 import java.sql.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.backend.skillywilly.util.GeneralHelper.createExceptionResponse;
 
@@ -34,6 +34,10 @@ public class UserController {
     @Autowired
     private PasswordService passwordService;
 
+    @Autowired
+    private EmailService emailService;
+
+
     // Signierungsschlüssel, sollte in einer echten Anwendung sicher gespeichert werden
     private static final Key SIGNING_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -45,16 +49,45 @@ public class UserController {
                 return new ResponseEntity<>("Invalid input: Username, password, or email is missing.", HttpStatus.BAD_REQUEST);
             }
 
+            // Passwort hashen
             String hashedPassword = passwordService.hashPassword(user.getPassword());
             user.setPassword(hashedPassword);
 
+            // Verifikationstoken generieren
+            String token = UUID.randomUUID().toString();
+            user.setVerificationToken(token);
+
+            // Token-Ablaufzeit setzen (24 Stunden)
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR, 24);
+            user.setTokenExpiryDate(new Date(calendar.getTimeInMillis()));
+
+            // Benutzer als nicht verifiziert markieren
+            user.setVerified(false);
+
+            // Benutzer erstellen
             User createdUser = userService.createUser(user);
-            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+
+            // Bestätigungs-E-Mail senden
+            emailService.sendVerificationEmail(user.getEmail(), token);
+
+            // Passwort und Token aus der Antwort entfernen
+            createdUser.setPassword(null);
+            createdUser.setVerificationToken(null);
+
+            return new ResponseEntity<>(
+                    new HashMap<String, Object>() {{
+                        put("user", createdUser);
+                        put("message", "Benutzer erfolgreich erstellt. Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu aktivieren.");
+                    }},
+                    HttpStatus.CREATED
+            );
 
         } catch (Exception e) {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @CrossOrigin
     @GetMapping
@@ -112,8 +145,17 @@ public class UserController {
     }
 
     @CrossOrigin
-    @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(HttpServletRequest request) {
+    @GetMapping("/verify")
+    public RedirectView verifyEmail(@RequestParam String token) {
+        boolean ok = userService.verifyUserEmail(token) != null;
+        return new RedirectView(ok
+                ? "/verify_success.html"
+                : "/verify_error.html");
+    }
+
+    @CrossOrigin
+    @PostMapping("/verify-token")
+    public ResponseEntity<?> verifyAuthToken(HttpServletRequest request) {
         try {
             // Cookie aus der Request extrahieren
             Cookie[] cookies = request.getCookies();
@@ -197,6 +239,14 @@ public class UserController {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
+                // Prüfen, ob der Benutzer verifiziert ist
+                if (!user.isVerified()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new HashMap<String, String>() {{
+                                put("message", "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse");
+                            }});
+                }
+
                 if (passwordService.verifyPassword(user.getPassword(), password)) {
                     String token = generateJwtToken(user);
 
@@ -259,7 +309,7 @@ public class UserController {
                     put("message", "Erfolgreich ausgeloggt");
                 }});
     }
-    
+
     private String generateJwtToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
