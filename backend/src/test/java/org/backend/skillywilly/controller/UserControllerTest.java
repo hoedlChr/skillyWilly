@@ -1,6 +1,7 @@
 package org.backend.skillywilly.controller;
 
 import org.backend.skillywilly.model.User;
+import org.backend.skillywilly.service.EmailService;
 import org.backend.skillywilly.service.PasswordService;
 import org.backend.skillywilly.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +12,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 public class UserControllerTest {
@@ -26,6 +28,9 @@ public class UserControllerTest {
     @Mock
     private PasswordService passwordService;
 
+    @Mock
+    private EmailService emailService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -33,6 +38,7 @@ public class UserControllerTest {
 
     @Test
     void testCreateUser_ValidInput_SuccessfulRegistration() {
+        // Setup
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("password123");
@@ -47,12 +53,27 @@ public class UserControllerTest {
         when(passwordService.hashPassword("password123")).thenReturn("hashedPassword123");
         when(userService.createUser(user)).thenReturn(createdUser);
 
+        // Act
         ResponseEntity<?> response = userController.createUser(user);
 
+        // Assert Status
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        // Assert Body ist eine Map mit User und Message
         assertNotNull(response.getBody());
-        assertEquals(createdUser, response.getBody());
+        assertTrue(response.getBody() instanceof Map, "Body sollte eine Map sein");
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+
+        // Prüfe den User-Eintrag
+        assertEquals(createdUser, body.get("user"));
+
+        // Prüfe die Erfolgsmeldung
+        String expectedMsg = "Benutzer erfolgreich erstellt. Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu aktivieren.";
+        assertEquals(expectedMsg, body.get("message"));
     }
+
 
     @Test
     void testCreateUser_InvalidInput_RespondsBadRequest() {
