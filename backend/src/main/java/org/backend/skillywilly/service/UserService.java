@@ -5,6 +5,7 @@ import org.backend.skillywilly.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,4 +110,26 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUsername(username); // Beschreibender Variablename
         return userOptional;
     }
+
+    public User verifyUserEmail(String token) {
+        User user = userRepository.findByVerificationToken(token)
+                .orElse(null);
+
+        if (user == null) {
+            return null; // Token nicht gefunden
+        }
+
+        // Prüfen, ob das Token abgelaufen ist
+        if (user.getTokenExpiryDate().before(new Date(System.currentTimeMillis()))) {
+            return null; // Token abgelaufen
+        }
+
+        // Benutzer verifizieren
+        user.setVerified(true);
+        user.setVerificationToken(null);
+        user.setTokenExpiryDate(null);
+
+        return userRepository.save(user);
+    }
+
 }
