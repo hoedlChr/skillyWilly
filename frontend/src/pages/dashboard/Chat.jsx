@@ -38,15 +38,20 @@ sortedChats.forEach((chat, index) => {
 });
 
 const sendMessage = () => {
-  const formdata = new FormData();
-  formdata.append("userFromId", "31");
-  formdata.append("userToId", "30");
-  formdata.append("message", "Guten tag ich hätte gern");
-  formdata.append("created", new Date().toISOString().slice(0, 19));
+  const formdata = {
+    // userFromId: currentUser.id,
+    // userToId: userId,
+    // message: "",
+    // created: new Date().toISOString().slice(0, 19),
+    userFromId: "31",
+    userToId: "30",
+    message: "Guten tag ich hätte gern",
+    created: new Date().toISOString().slice(0, 19),
+  };
 
   const requestOptions = {
     method: "POST",
-    body: formdata,
+    body: JSON.stringify(formdata),
     credentials: "include",
     redirect: "follow"
   };

@@ -30,12 +30,12 @@ function App() {
         redirect: "follow"
       };
 
-      fetch("/api/users/verify", requestOptions)
+      fetch("/api/users/verify-token", requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          if(result.hasOwnProperty("error")) {
-            throw new Error(result.error);
-          }
+          // if(result.hasOwnProperty("error")) {
+          //   throw new Error(result.error);
+          // }
           if(result.hasOwnProperty("user")){ 
             setUser(result.user);
           }
@@ -44,6 +44,7 @@ function App() {
         .catch((error) => {
           console.error(error);
         });
+        
   }, []);
 
   if(isLoading){

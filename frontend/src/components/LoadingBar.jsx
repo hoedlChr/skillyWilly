@@ -8,7 +8,10 @@ const LoadingBar = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRandomNumber(Math.floor(Math.random() * 99) + 1);
+      let newRandomNumber = Math.floor(Math.random() * 99) + 1;
+      if( newRandomNumber > randomNumber) {
+        setRandomNumber(newRandomNumber);
+      }
     }, 1000);
 
     return () => clearInterval(interval); // Cleanup on unmount

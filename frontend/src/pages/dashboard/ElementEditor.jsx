@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import StandardInputField from '../../components/StandardInputField';
 import Button from '../../components/Button';
+import LoadingBar from '../../components/LoadingBar';
 
 function ElementEditor({id, data, setShowElement, user}) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [created, setCreated] = useState("");
+    const [loading, setLoading] = useState(false);
     useEffect(()=>{
         let element = data.find((element) => element.id === id);
         if (!element) {
@@ -24,7 +26,7 @@ function ElementEditor({id, data, setShowElement, user}) {
 			created: new Date().toISOString(),
 			userId: user.id,
 		};
-
+        setLoading(true);
 		fetch(`/api/skills/${id}`, {
 			method: "PUT",
             credentials: "include",
@@ -38,6 +40,9 @@ function ElementEditor({id, data, setShowElement, user}) {
         })
         .catch((err) => {
             console.log(err);
+        })
+        .finally(() => {
+            setLoading(false);
         });
 	}
 
@@ -69,12 +74,18 @@ function ElementEditor({id, data, setShowElement, user}) {
                 type="html"
                 changeHandler={setDescription}
             />
-            <Button className="btn-success btn-block mr-2" onClick={saveChanges}>
-				save changes
-			</Button>
-            <Button className="btn-danger btn-block" onClick={cancel}>
-			    cancel
-			</Button>
+            {
+                loading ?
+                <LoadingBar />
+                : <>
+                    <Button className="btn-success btn-block mr-2" onClick={saveChanges}>
+                        save changes
+                    </Button>
+                    <Button className="btn-danger btn-block" onClick={cancel}>
+                        cancel
+                    </Button>
+                </>
+            }
         </div>
     );
 }
