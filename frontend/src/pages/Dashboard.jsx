@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import StandardInputField from '../components/StandardInputField';
 import Button from '../components/Button';
 import Chat from './dashboard/Chat';
@@ -77,7 +77,12 @@ function Dashboard({user, setUser}) {
         });
 
 // get messages from/to user
-        fetch(`/api/messages/all/${user.id}`, {
+    }, []);
+
+    //call all chats every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetch(`/api/messages/all/${user.id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -102,7 +107,9 @@ function Dashboard({user, setUser}) {
         .catch((error) => {
             console.error("Error fetching user data:", error);
         });
-
+        console.log("Fetched chats:", chats);
+        }, 5000);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {

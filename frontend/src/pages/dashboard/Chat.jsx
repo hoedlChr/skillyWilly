@@ -3,7 +3,7 @@ import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 
 function Chat({ currentUser, userId, users, chats, style }) {
-  useEffect(() => {}, []);
+  const [message, setMessage] = useState("");
 let name = users[userId].username;
 let title = "";
 
@@ -31,23 +31,16 @@ sortedChats.forEach((chat, index) => {
     } else if (chat.userToId === userId) {
       messages.push(
         <OutGoingMessage key={"chatMessage" + index}
-          message={chat.message}
+          message={chat.message.replace(/^"|"$/g, '')}
           time={date + " " + time}
           />);
     }
 });
 
 const sendMessage = () => {
-  const formdata = {
-    // userFromId: currentUser.id,
-    // userToId: userId,
-    // message: "",
-    // created: new Date().toISOString().slice(0, 19),
-    userFromId: "31",
-    userToId: "30",
-    message: "Guten tag ich hätte gern",
-    created: new Date().toISOString().slice(0, 19),
-  };
+  const formdata = 
+    message.trim()
+  ;
 
   const requestOptions = {
     method: "POST",
@@ -55,8 +48,10 @@ const sendMessage = () => {
     credentials: "include",
     redirect: "follow"
   };
-
-  fetch("/api/messages", requestOptions)
+  
+  let from = currentUser.id;
+  let to = userId;
+  fetch(`/api/messages/${from}/${to}`, requestOptions)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
@@ -81,7 +76,7 @@ return (
                 <hr/>
               </div>
                 <div className="col-10">
-                    <InputField placeholder="Type a message..." />
+                    <InputField value={message} changeHandler={setMessage} placeholder="Type a message..." />
                 </div>
                 <div className="col-2">
                     <Button className="btn btn-primary" onClick={() => sendMessage()}>Send</Button>
