@@ -54,12 +54,7 @@ function CreateAccount() {
         })
         .then(res => res.json())
         .then(data => {
-            if(data.id === "success"){
-                //redirect to login page
                 window.location.href = "/login";
-            } else {
-                //show error message
-            }
         }).finally(() => {
             setIsLoading(false);
         });

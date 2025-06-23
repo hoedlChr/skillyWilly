@@ -48,12 +48,12 @@ const sendMessage = () => {
     credentials: "include",
     redirect: "follow"
   };
-  
+
   let from = currentUser.id;
   let to = userId;
   fetch(`/api/messages/${from}/${to}`, requestOptions)
     .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((result) => {console.log(result); setMessage("");})
     .catch((error) => console.error(error));
 }
 
