@@ -24,7 +24,7 @@ sortedChats.forEach((chat, index) => {
     }
     if (chat.userFromId === userId) {
       messages.push(<InComingMessage key={"chatMessage" + index}
-        message={chat.message}
+        message={chat.message.replace(/^"|"$/g, '')}
         time={date + " " + time}
         />
       );
