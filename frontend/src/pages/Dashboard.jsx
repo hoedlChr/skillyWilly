@@ -69,20 +69,14 @@ function Dashboard({user, setUser}) {
             return res.json();
         })
         .then((data) => {
-            setData(data.skills);
+            // setData(data.skills);
             setAllUserData(data);
         })
         .catch((error) => {
             console.error("Error fetching user data:", error);
         });
 
-// get messages from/to user
-    }, []);
-
-    //call all chats every 5 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetch(`/api/messages/all/${user.id}`, {
+        fetch(`/api/messages/all/${user.id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -96,7 +90,6 @@ function Dashboard({user, setUser}) {
         })
         .then((data) => {
             let sortedData = data.sort((a, b) => new Date(b.created) + new Date(a.created));
-            console.log(sortedData);
             setChats(sortedData);
             // Fetch users
             data.forEach(element => {
@@ -107,7 +100,38 @@ function Dashboard({user, setUser}) {
         .catch((error) => {
             console.error("Error fetching user data:", error);
         });
-        console.log("Fetched chats:", chats);
+
+// get messages from/to user
+    }, []);
+
+    //call all chats every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+        fetch(`/api/messages/all/${user.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            let sortedData = data.sort((a, b) => new Date(b.created) + new Date(a.created));
+            setChats(sortedData);
+            // Fetch users
+            data.forEach(element => {
+                findUser(element.userFromId);
+                findUser(element.userToId);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+
         }, 5000);
         return () => clearInterval(interval);
     }, []);

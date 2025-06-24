@@ -53,7 +53,7 @@ const sendMessage = () => {
   let to = userId;
   fetch(`/api/messages/${from}/${to}`, requestOptions)
     .then((response) => response.text())
-    .then((result) => {console.log(result); setMessage("");})
+    .then((result) => {setMessage("");})
     .catch((error) => console.error(error));
 }
 

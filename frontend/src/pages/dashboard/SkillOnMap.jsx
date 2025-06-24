@@ -30,6 +30,9 @@ function SkillOnMap({ data, users, show, setShow }) {
 		}
 		Object.keys(users).forEach((user_id) => {
 			const user = users[user_id];
+			if (!user.hasOwnProperty("location") || user.location === null) {
+				return; // Skip users without a location
+			}
 			let marker = {
 				position: [parseFloat(user.location.lat), parseFloat(user.location.lon)],
 				content: `${user.username}`,

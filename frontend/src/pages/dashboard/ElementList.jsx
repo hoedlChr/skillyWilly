@@ -15,9 +15,10 @@ function ElementList({mySkilly=false, data, users, user, setShowChat, setShowEle
     if(loading){
         return (<LoadingBar />)
     }
-    if(data === undefined){
-        return (
+    if(data === undefined || data === null || users === undefined || users === null){
+        return (<>
             <LoadingBar />
+        </>
         )
     }
     if(data.length === 0){
@@ -33,8 +34,10 @@ function ElementList({mySkilly=false, data, users, user, setShowChat, setShowEle
             {
                 data.map((element, index) => {
                     let ort = "";
-                    if(users[element.userId] !== undefined && users[element.userId].hasOwnProperty("location") === true){
-                        ort = users[element.userId].location.display_name;
+                    if(users[element.userId] !== undefined && users[element.userId].hasOwnProperty("location") === true && users[element.userId].location !== null){
+                        if(users[element.userId].location.hasOwnProperty("display_name") === true){
+                            ort = users[element.userId].location.display_name;
+                        }
                     }
                     let username = "";
                     if(users[element.userId] !== undefined && users[element.userId].hasOwnProperty("username") === true){

@@ -31,8 +31,19 @@ function Navbar({text, search, setSearch, setShowCreateSkill, setShowElementsOnM
     }
     return (
         <div className='row my-4'>
+            
                 <div className="col">
+                <div className="col-auto d-flex align-items-center">
+
+                    <a style={{ marginRight: "16px"}} href="/Dashboard">
+                        <img
+                            src="/logo.png"
+                            alt="Logo"
+                            style={{ height: "40px", verticalAlign: "middle" }}
+                        />
+                    </a>
                     <h2><a style={{color: "black", textDecoration: "none"}} href="/Dashboard">{text}</a></h2>
+                </div>
                 </div>
                 { search === undefined ? null:
                 <div className="col-4">
