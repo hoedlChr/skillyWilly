@@ -58,9 +58,9 @@ public class UserDataController {
     public ResponseEntity<?> deleteUserData(@PathVariable Long id) {
         try {
             userDataService.deleteUserData(id);
-            return ResponseEntity.noContent().build();  // 204 No Content
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();  // 404 Not Found
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return createExceptionResponse(e);
         }
