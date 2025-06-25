@@ -53,23 +53,23 @@ public class UserControllerTest {
         when(passwordService.hashPassword("password123")).thenReturn("hashedPassword123");
         when(userService.createUser(user)).thenReturn(createdUser);
 
-        // Act
+
         ResponseEntity<?> response = userController.createUser(user);
 
-        // Assert Status
+
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-        // Assert Body ist eine Map mit User und Message
+
         assertNotNull(response.getBody());
         assertTrue(response.getBody() instanceof Map, "Body sollte eine Map sein");
 
         @SuppressWarnings("unchecked")
         Map<String, Object> body = (Map<String, Object>) response.getBody();
 
-        // Prüfe den User-Eintrag
+
         assertEquals(createdUser, body.get("user"));
 
-        // Prüfe die Erfolgsmeldung
+
         String expectedMsg = "Benutzer erfolgreich erstellt. Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu aktivieren.";
         assertEquals(expectedMsg, body.get("message"));
     }

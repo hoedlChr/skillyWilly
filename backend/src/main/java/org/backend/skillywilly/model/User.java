@@ -7,9 +7,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.sql.Date;
 
-/**
- * Entity representing a User in the system.
- */
 @Entity
 @Table(name = "User")
 @Data
@@ -37,7 +34,7 @@ public class User {
 
     @Column(name = "token_expiry_date")
     private Date tokenExpiryDate;
-    
+
     @Column(
             name = "verified",
             nullable = false,

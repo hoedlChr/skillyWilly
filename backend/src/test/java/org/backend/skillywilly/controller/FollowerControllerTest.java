@@ -45,7 +45,7 @@ class FollowerControllerTest {
 
     @Test
     void testFollowUser_InvalidFollower() {
-        Follower follower = new Follower(); // Missing userFollowedId and userFollowerId
+        Follower follower = new Follower();
 
         ResponseEntity<?> response = followerController.followUser(follower);
 
