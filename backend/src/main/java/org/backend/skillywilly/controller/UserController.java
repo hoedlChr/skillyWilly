@@ -37,8 +37,6 @@ public class UserController {
     @Autowired
     private EmailService emailService;
 
-
-    // Signierungsschlüssel, sollte in einer echten Anwendung sicher gespeichert werden
     private static final Key SIGNING_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @CrossOrigin
@@ -49,29 +47,23 @@ public class UserController {
                 return new ResponseEntity<>("Invalid input: Username, password, or email is missing.", HttpStatus.BAD_REQUEST);
             }
 
-            // Passwort hashen
+
             String hashedPassword = passwordService.hashPassword(user.getPassword());
             user.setPassword(hashedPassword);
 
-            // Verifikationstoken generieren
             String token = UUID.randomUUID().toString();
             user.setVerificationToken(token);
 
-            // Token-Ablaufzeit setzen (24 Stunden)
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR, 24);
             user.setTokenExpiryDate(new Date(calendar.getTimeInMillis()));
 
-            // Benutzer als nicht verifiziert markieren
             user.setVerified(false);
 
-            // Benutzer erstellen
             User createdUser = userService.createUser(user);
 
-            // Bestätigungs-E-Mail senden
             emailService.sendVerificationEmail(user.getEmail(), token);
 
-            // Passwort und Token aus der Antwort entfernen
             createdUser.setPassword(null);
             createdUser.setVerificationToken(null);
 
@@ -157,7 +149,6 @@ public class UserController {
     @PostMapping("/verify-token")
     public ResponseEntity<?> verifyAuthToken(HttpServletRequest request) {
         try {
-            // Cookie aus der Request extrahieren
             Cookie[] cookies = request.getCookies();
             if (cookies == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -166,7 +157,6 @@ public class UserController {
                         }});
             }
 
-            // Auth-Token Cookie suchen
             String token = null;
             for (Cookie cookie : cookies) {
                 if ("auth-token".equals(cookie.getName())) {
@@ -182,7 +172,6 @@ public class UserController {
                         }});
             }
 
-            // Token validieren
             try {
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(getSigningKey())
@@ -192,7 +181,6 @@ public class UserController {
 
                 Long userId = claims.get("userId", Long.class);
 
-                // Benutzer aus der Datenbank abrufen
                 Optional<User> userOptional = userService.getUserById(userId);
                 if (!userOptional.isPresent() || !userOptional.get().getId().equals(userId)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -202,7 +190,7 @@ public class UserController {
                 }
 
                 User user = userOptional.get();
-                user.setPassword(null); // Passwort aus der Antwort entfernen
+                user.setPassword(null);
 
                 return ResponseEntity.ok()
                         .body(new HashMap<String, Object>() {{
@@ -239,7 +227,6 @@ public class UserController {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
-                // Prüfen, ob der Benutzer verifiziert ist
                 if (!user.isVerified()) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                             .body(new HashMap<String, String>() {{
@@ -256,10 +243,8 @@ public class UserController {
                     authCookie.setPath("/");
                     authCookie.setMaxAge(7 * 24 * 60 * 60);
 
-                    // Direkt das Cookie zur Response hinzufügen
                     response.addCookie(authCookie);
 
-                    // SameSite über Header-Parameter setzen
                     response.setHeader("Set-Cookie",
                             String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
                                     authCookie.getName(), authCookie.getValue(), authCookie.getMaxAge(),
@@ -295,10 +280,8 @@ public class UserController {
         authCookie.setPath("/");
         authCookie.setMaxAge(0);
 
-        // Direkt das Cookie zur Response hinzufügen
         response.addCookie(authCookie);
 
-        // SameSite über Header-Parameter setzen
         response.setHeader("Set-Cookie",
                 String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
                         authCookie.getName(), authCookie.getValue(), authCookie.getMaxAge(),
@@ -332,7 +315,6 @@ public class UserController {
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Token ist gültig, wenn es hier keine Ausnahme gibt und nicht abgelaufen ist
             return !claims.getExpiration().before(new Date(System.currentTimeMillis()));
         } catch (Exception e) {
             return false;
