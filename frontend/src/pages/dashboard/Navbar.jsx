@@ -30,8 +30,10 @@ function Navbar({text, search, setSearch, setShowCreateSkill, setShowElementsOnM
         });
     }
     return (
-        <div className='row my-2 border-bottom'>
-            <div className='row container'>
+        <div className='border-bottom my-2'>
+
+        <div className='row mx-2'>
+            <div className='row  container'>
                 <div className="col">
                 <div className="col-auto d-flex align-items-center">
 
@@ -92,6 +94,7 @@ function Navbar({text, search, setSearch, setShowCreateSkill, setShowElementsOnM
                 </div>
             </div>
             </div>
+        </div>
     );
 }
 
