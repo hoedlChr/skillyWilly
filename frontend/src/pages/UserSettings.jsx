@@ -104,9 +104,9 @@ function UserSettings({user}) {
     }
 
 
-    return (
-        <div className='container'>
+    return (<>
             <Navbar text="User Settings" />
+        <div className='container'>
             <StandardInputField 
                 label="Firstname"
                 id={"firstname"}
@@ -206,7 +206,7 @@ function UserSettings({user}) {
                 <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
                 </div>
         </div>
-    );
+    </>);
 }
 
 export default UserSettings;

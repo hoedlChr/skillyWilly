@@ -9,6 +9,7 @@ import ElementView from './dashboard/ElementView';
 import CreateSkill from './dashboard/CreateSkill';
 import SkillOnMap from './dashboard/SkillOnMap';
 import Navbar from './dashboard/Navbar';
+import InputField from '../components/InputField';
 
 function Dashboard({user, setUser}) {
     const [showChat, setShowChat] = useState(false);
@@ -26,7 +27,31 @@ function Dashboard({user, setUser}) {
 
     const [search, setSearch] = useState("");
 
+    const [message, setMessage] = useState("");
+
+
     const height = 90;
+
+    const sendMessage = () => {
+        const formdata = 
+            message.trim()
+        ;
+
+        const requestOptions = {
+            method: "POST",
+            body: JSON.stringify(formdata),
+            credentials: "include",
+            redirect: "follow"
+        };
+
+        let from = allUserData.id;
+        let to = showChat;
+        fetch(`/api/messages/${from}/${to}`, requestOptions)
+            .then((response) => response.text())
+            .then((result) => {setMessage("");})
+            .catch((error) => console.error(error));
+    }
+
     useEffect(() => {
 // Fetch all skills
         fetch(`/api/skills`, {
@@ -192,8 +217,8 @@ function Dashboard({user, setUser}) {
     return (<>
         <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
         <SkillOnMap data={data} users={users} show={showElementsOnMap} setShow={setShowElementsOnMap}/>
-        <div className='container'>
             <Navbar text="Dashboard" search={search} setSearch={setSearch} setShowCreateSkill={setShowCreateSkill} setShowElementsOnMap={setShowElementsOnMap}/>
+        <div className='container'>
             <div className='d-block d-xl-none'>
                 {
                     chats.length > 0 ?
@@ -241,7 +266,7 @@ function Dashboard({user, setUser}) {
                     <div className="card">
                         {
                             showChat ?
-                            <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height}vh`}} />:null
+                            <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height-5}vh`}} />:null
                         }
                         {
                             showElement ?
@@ -256,24 +281,53 @@ function Dashboard({user, setUser}) {
                     {
                         chats.length > 0 ?
                         <div className='col-3 overflow-auto' style={{height: `${height}vh`}}>
-                            <div className="row">
-                                <ChatList setShowChat={setShowChat} currentUser={allUserData} chats={chats} users={users} setShowElement={setShowElement}/>
-                            </div>
+                                <div className='card'>
+                                    <h5 className='card-header'>Chats</h5>
+                                    <div className='card-body'>
+                                        <ChatList setShowChat={setShowChat} currentUser={allUserData} chats={chats} users={users} setShowElement={setShowElement}/>
+                                    </div>
+                                </div>
                         </div>:null
                     }
-                    <div className={`col overflow-auto`} style={{height: `${height}vh`}}>
-                            <ElementList data={filteredData} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
+                    <div className='col'>
+
+                        <div className='card'>
+                            <h5 className='card-header'>Elements</h5>
+                            <div className='card-body'>
+                                <div className={`overflow-auto`} style={{height: `${height}vh`}}>
+                                <ElementList data={filteredData} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {
                         showChat === false && showElement === false ? null:
                         <div className="col-4" style={{height: `${height}vh`}}>
                             {
                                 showChat ?
-                                <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height}vh`}} />:null
+                                <div className='card'>
+                                    <h5 className='card-header'>Chat</h5>
+                                    <div className='card-body'>
+                                        <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height-10}vh`}} />
+                                    </div>
+                                    <div className='card-footer'>
+                                        <div className="col-auto d-flex align-items-center">
+                                                <InputField value={message} changeHandler={setMessage} placeholder="Type a message..." />
+                                                <Button className="btn btn-primary" onClick={() => sendMessage()}>Send</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                                :null
                             }
                             {
                                 showElement ?
-                                <ElementView id={showElement} data={filteredData} users={users}/> :null
+                                <div className='card'>
+                                    <h5 className='card-header'>Element</h5>
+                                    <div className='card-body' style={{height: `100%`}}>
+                                        <ElementView id={showElement} data={filteredData} users={users}/> 
+                                    </div>
+                                </div>
+                                :null
                             }
                         </div>
                     }

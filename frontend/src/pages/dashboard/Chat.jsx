@@ -57,33 +57,30 @@ const sendMessage = () => {
     .catch((error) => console.error(error));
 }
 
+const followUser = () => {
+
+}
+
 return (
-    <div style={{ ...style,  display: "flex", flexDirection: "column" }}>
-        <div className="row">
-            <h2>{name}</h2>
-            <h4>{title}</h4>
-            <div className="mv-2">
-                <hr/>
-            </div>
-        </div>
-        <div className="overflow-auto" style={{ flex: 1, height: "100%", maxHeight: "calc(100vh - 200px)" }}>
-          {messages}
-           
-        </div>
-        <div>
-            <div className="row">
-              <div className="mv-2">
-                <hr/>
-              </div>
-                <div className="col-10">
-                    <InputField value={message} changeHandler={setMessage} placeholder="Type a message..." />
-                </div>
-                <div className="col-2">
-                    <Button className="btn btn-primary" onClick={() => sendMessage()}>Send</Button>
-                </div>
-            </div>
-        </div>
+  <div style={{ ...style, display: "flex", flexDirection: "column" }}>
+    <div className="row align-items-center">
+      <div className="col">
+        <h2>{name}</h2>
+      </div>
+      <div className="col-auto">
+        <Button className="btn btn-primary" onClick={() => followUser()}>follow</Button>
+      </div>
     </div>
+    <h4>{title}</h4>
+    <div className="mv-2">
+      <hr />
+    </div>
+    <div className="overflow-auto" style={{ flex: 1, height: "100%", maxHeight: "calc(100vh - 200px)" }}>
+      {messages}
+    </div>
+    <div>
+    </div>
+  </div>
 );
 }
 

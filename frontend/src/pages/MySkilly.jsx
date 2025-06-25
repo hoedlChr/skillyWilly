@@ -64,8 +64,8 @@ function MySkilly({user}) {
     const users = {[user.id]: allUserData};
     return (<>
         <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
-        <div className='container'>
             <Navbar text="MySkilly" setShowCreateSkill={setShowCreateSkill}/>
+        <div className='container'>
             {
                 loading ? <LoadingBar /> :
                 <div className='row'>

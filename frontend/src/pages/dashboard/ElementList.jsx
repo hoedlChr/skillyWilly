@@ -29,8 +29,7 @@ function ElementList({mySkilly=false, data, users, user, setShowChat, setShowEle
         )
     }
     return (
-        <div>
-            Elements
+        <div className='px-2' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {
                 data.map((element, index) => {
                     let ort = "";
@@ -56,11 +55,11 @@ function ElementList({mySkilly=false, data, users, user, setShowChat, setShowEle
                             showElement={showElement}
                             user={user}
                             creatorId={element.userId}
-                            />
+                        />
                     )
                 })
             }
-            </div>
+        </div>
     );
 }
 

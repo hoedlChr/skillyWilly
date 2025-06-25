@@ -62,10 +62,9 @@ function ChatList({setShowChat,currentUser, chats, users, setShowElement}) {
     })
 
     return (
-        <div>
-            Chats
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {chatList}
-            </div>
+        </div>
     );
 }
 

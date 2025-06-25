@@ -30,7 +30,6 @@ function ElementView({id, data, users}) {
         })
         .then((res) => res.json())
         .then((data) => {
-            console.log("Fetched element data:", data);
             if(data.likeCount !== undefined && data.likeCount !== null && data.likeCount > 0){
                 setLikeCount(data.likeCount);
             }
@@ -41,7 +40,7 @@ function ElementView({id, data, users}) {
     },[id])
 
     return (
-        <div className='mt-4'>
+        <div className='mt-1'>
             <div className="d-flex justify-content-between align-items-center">
                 <h2 className="mb-0">{title}</h2>
                 <Button className='btn btn-primary' style={{ background: 'initial', border: "none", padding: "0px", color: 'black' }} onClick={() => {
