@@ -202,7 +202,7 @@ function Dashboard({user, setUser}) {
                 return true;
             }
             let ort = "";
-            if (users[element.userId] !== undefined && users[element.userId].hasOwnProperty("location") === true) {
+            if (users[element.userId] !== undefined && users[element.userId].hasOwnProperty("location") === true && users[element.userId].location !== null && users[element.userId].location.hasOwnProperty("display_name") === true) {
                 ort = users[element.userId].location.display_name;
             }
             let username = "";
