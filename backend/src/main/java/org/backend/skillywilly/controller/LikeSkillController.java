@@ -11,37 +11,49 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/like-skills")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class LikeSkillController {
+
     private final LikeSkillService likeSkillService;
 
     @CrossOrigin
     @PostMapping("/like")
     public ResponseEntity<LikeSkill> likeSkill(
-            @RequestParam Long userId,
-            @RequestParam Long skillId) {
-        return ResponseEntity.ok(likeSkillService.saveLike(userId, skillId));
+            @RequestBody Map<String, Long> body
+    ) {
+        Long userId = body.get("userId");
+        Long skillId = body.get("skillId");
+        LikeSkill saved = likeSkillService.saveLike(userId, skillId);
+        return ResponseEntity.ok(saved);
     }
 
     @CrossOrigin
     @DeleteMapping("/unlike")
     public ResponseEntity<Void> unlikeSkill(
-            @RequestParam Long userId,
-            @RequestParam Long skillId) {
+            @RequestBody Map<String, Long> body
+    ) {
+        Long userId = body.get("userId");
+        Long skillId = body.get("skillId");
         likeSkillService.removeLike(userId, skillId);
         return ResponseEntity.ok().build();
     }
 
     @CrossOrigin
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Long>> getLikedSkillsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(likeSkillService.findSkillIdsByUserId(userId));
+    public ResponseEntity<List<Long>> getLikedSkillsByUser(
+            @PathVariable Long userId
+    ) {
+        return ResponseEntity.ok(
+                likeSkillService.findSkillIdsByUserId(userId)
+        );
     }
 
     @CrossOrigin
     @GetMapping("/skill/{skillId}")
-    public ResponseEntity<Map<String, Object>> getSkillLikeInfo(@PathVariable Long skillId) {
+    public ResponseEntity<Map<String, Object>> getSkillLikeInfo(
+            @PathVariable Long skillId
+    ) {
         return ResponseEntity.ok(Map.of(
                 "likeCount", likeSkillService.countLikesBySkillId(skillId),
                 "userIds", likeSkillService.findUserIdsBySkillId(skillId)
@@ -52,7 +64,10 @@ public class LikeSkillController {
     @GetMapping("/check")
     public ResponseEntity<Boolean> checkUserLikedSkill(
             @RequestParam Long userId,
-            @RequestParam Long skillId) {
-        return ResponseEntity.ok(likeSkillService.hasUserLikedSkill(userId, skillId));
+            @RequestParam Long skillId
+    ) {
+        return ResponseEntity.ok(
+                likeSkillService.hasUserLikedSkill(userId, skillId)
+        );
     }
 }
