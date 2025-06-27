@@ -4,6 +4,7 @@ import org.backend.skillywilly.model.Follower;
 import org.backend.skillywilly.repository.FollowerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class FollowerService {
         return followerRepository.save(follower);
     }
 
+    @Transactional
     public void unfollowUser(Long followerId, Long followingId) {
         followerRepository.deleteByUserFollowerIdAndUserFollowedId(followerId, followingId);
     }
