@@ -357,7 +357,7 @@ function Dashboard({user, setUser}) {
                                 <div className='card'>
                                     <h5 className='card-header'>Element</h5>
                                     <div className='card-body' style={{height: `100%`}}>
-                                        <ElementView currentUser={allUserData} id={showElement} data={filteredData} users={users}/> 
+                                        <ElementView currentUser={allUserData} id={showElement} data={filteredData} users={users} setShowElement={setShowElement} setShowChat={setShowChat}/> 
                                     </div>
                                 </div>
                                 :null

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
 
-function ElementView({id, data, users, currentUser}) {
+function ElementView({id, data, users, currentUser, setShowElement, setShowChat}) {
     const [title, setTitle] = useState("");
     const [name, setName] = useState("");
+    const [userID, setUserID] = useState("");
     const [ort, setOrt] = useState("");
     const [description, setDescription] = useState("");
     const [created, setCreated] = useState("");
@@ -17,6 +18,7 @@ function ElementView({id, data, users, currentUser}) {
             return;
         }
         setName(users[element.userId].username);
+        setUserID(element.userId);
         setTitle(element.subject);
         let date = new Date(element.created);
         setCreated(date.toLocaleDateString() + " " + date.toLocaleTimeString());
@@ -108,7 +110,8 @@ function ElementView({id, data, users, currentUser}) {
                 }
             </div>
             <Button className='btn clickable' style={{ background: 'initial', border: "none", padding: "0px", color: 'black' }} onClick={() => {
-                window.location.href = `/chat/${users[id].id}`;
+                setShowElement(false);
+                setShowChat(userID);
             }}><h4>{name}</h4></Button>
             <p>{ort}</p>
             <div className='text-end'>
