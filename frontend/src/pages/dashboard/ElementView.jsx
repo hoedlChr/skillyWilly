@@ -38,6 +38,8 @@ function ElementView({id, data, users, currentUser}) {
             }
             if(data.userIds !== undefined && data.userIds !== null && data.userIds.includes(currentUser.id)){
                 setLiked(true);
+            } else {
+                setLiked(false);
             }
         })
         .catch((err) => {
@@ -61,7 +63,7 @@ function ElementView({id, data, users, currentUser}) {
         redirect: "follow"
         };
 
-        fetch("http://localhost:8080/api/like-skills/like", requestOptions)
+        fetch("/api/like-skills/like", requestOptions)
         .then((response) => response.text())
         .then((result) => {setLikeCount(likeCount+1);})
         .catch((error) => console.error(error));
@@ -83,12 +85,11 @@ function ElementView({id, data, users, currentUser}) {
         redirect: "follow"
         };
 
-        fetch("http://localhost:8080/api/like-skills/like", requestOptions)
+        fetch("/api/like-skills/unlike", requestOptions)
         .then((response) => response.text())
-        .then((result) => {setLikeCount(likeCount+1);})
+        .then((result) => {setLikeCount(likeCount-1);})
         .catch((error) => console.error(error));
     }
-
     return (
         <div className='mt-1'>
             <div className="d-flex justify-content-between align-items-center">
