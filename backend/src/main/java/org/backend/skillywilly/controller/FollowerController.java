@@ -42,7 +42,7 @@ public class FollowerController {
         }
         try {
             followerService.unfollowUser(followerId, followingId);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return createExceptionResponse(e);
         }
