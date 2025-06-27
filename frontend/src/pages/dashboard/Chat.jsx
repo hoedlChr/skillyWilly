@@ -60,23 +60,25 @@ const sendMessage = () => {
 const followUser = () => {
     let from = currentUser.id;
     let to = userId;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-    const formdata = {
-      followerId: from,
-      followingId: to
-    }
+    const raw = JSON.stringify({
+      "userFollowedId": to,
+      "userFollowerId": from
+    });
 
     const requestOptions = {
       method: "POST",
-      body: JSON.stringify(formdata),
-      credentials: "include",
+      headers: myHeaders,
+      body: raw,
       redirect: "follow"
     };
 
-    fetch(`/api/followers`, requestOptions)
-    .then((response) => response.text())
-    .then((result) => {console.log(result);})
-    .catch((error) => console.error(error));
+    fetch("/api/followers", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
 }
 
 const unFollowUser = () => {
