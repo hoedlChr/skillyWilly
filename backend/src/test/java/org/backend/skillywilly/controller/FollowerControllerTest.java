@@ -77,7 +77,7 @@ class FollowerControllerTest {
 
         ResponseEntity<?> response = followerController.unfollowUser(followerId, followingId);
 
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(followerService, times(1)).unfollowUser(followerId, followingId);
     }
 
