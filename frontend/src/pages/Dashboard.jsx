@@ -128,7 +128,7 @@ function Dashboard({user, setUser}) {
         .catch((error) => {
             console.error("Error fetching user data:", error);
         });
-
+// get all followed users
         fetch(`/api/followers/${user.id}/following`, {
             method: "GET",
             headers: {
@@ -142,7 +142,11 @@ function Dashboard({user, setUser}) {
             return res.json();
         })
         .then((data) => {
-            console.log("Followed users:", data);
+            let followedUsers = [];
+            data.forEach(element => {
+                followedUsers.push(element.userFollowedId);
+            })
+            setFollowedUsers(followedUsers);
         })
         .catch((error) => {
             console.error("Error fetching user data:", error);
@@ -220,7 +224,7 @@ function Dashboard({user, setUser}) {
     let filteredData = data
     if(data !== undefined && data.length > 0){
         filteredData = data.filter((element) => {
-            if(allTasks === false && element.id !== 19  && element.id !== 20  && element.id !== 32){
+            if(allTasks === false && !followedUsers.includes(element.userId)){
                 return false;
             }
             if (search === "") {
@@ -239,6 +243,7 @@ function Dashboard({user, setUser}) {
                 username.toLowerCase().includes(search.toLowerCase());
         })
     }
+
     return (<>
         <CreateSkill show={showCreateSkill} user={user} setShow={setShowCreateSkill}/>
         <SkillOnMap data={data} users={users} show={showElementsOnMap} setShow={setShowElementsOnMap}/>
@@ -341,7 +346,7 @@ function Dashboard({user, setUser}) {
                                 <div className='card'>
                                     <h5 className='card-header'>Chat</h5>
                                     <div className='card-body'>
-                                        <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height-10}vh`}} />
+                                        <Chat currentUser={allUserData} followedUsers={followedUsers} userId={showChat} chats={chats} users={users} style={{height: `${height-10}vh`}} />
                                     </div>
                                     <div className='card-footer'>
                                         <div className="col-auto d-flex align-items-center">
