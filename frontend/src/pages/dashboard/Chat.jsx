@@ -58,7 +58,47 @@ const sendMessage = () => {
 }
 
 const followUser = () => {
+    let from = currentUser.id;
+    let to = userId;
 
+    const formdata = {
+      followerId: from,
+      followingId: to
+    }
+
+    const requestOptions = {
+      method: "POST",
+      body: JSON.stringify(formdata),
+      credentials: "include",
+      redirect: "follow"
+    };
+
+    fetch(`/api/followers`, requestOptions)
+    .then((response) => response.text())
+    .then((result) => {console.log(result);})
+    .catch((error) => console.error(error));
+}
+
+const unFollowUser = () => {
+    let from = currentUser.id;
+    let to = userId;
+
+    const formdata = {
+      followerId: from,
+      followingId: to
+    }
+
+    const requestOptions = {
+      method: "DELETE",
+      body: JSON.stringify(formdata),
+      credentials: "include",
+      redirect: "follow"
+    };
+
+    fetch(`/api/followers`, requestOptions)
+    .then((response) => response.text())
+    .then((result) => {console.log(result);})
+    .catch((error) => console.error(error));
 }
 
 return (
@@ -68,7 +108,11 @@ return (
         <h2>{name}</h2>
       </div>
       <div className="col-auto">
-        <Button className="btn btn-primary" onClick={() => followUser()}>follow</Button>
+        {
+          true ?
+          <Button className="btn btn-success" onClick={() => followUser()}>follow</Button>:
+          <Button className="btn btn-danger" onClick={() => unFollowUser()}>unfollow</Button>
+        }
       </div>
     </div>
     <h4>{title}</h4>

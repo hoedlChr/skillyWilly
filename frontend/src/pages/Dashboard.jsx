@@ -29,6 +29,9 @@ function Dashboard({user, setUser}) {
 
     const [message, setMessage] = useState("");
 
+    const [followedUsers, setFollowedUsers] = useState([]);
+    const [allTasks, setAllTasks] = useState(true);
+
 
     const height = 90;
 
@@ -126,6 +129,25 @@ function Dashboard({user, setUser}) {
             console.error("Error fetching user data:", error);
         });
 
+        fetch(`/api/followers/${user.id}/following`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            console.log("Followed users:", data);
+        })
+        .catch((error) => {
+            console.error("Error fetching user data:", error);
+        });
+
 // get messages from/to user
     }, []);
 
@@ -198,6 +220,9 @@ function Dashboard({user, setUser}) {
     let filteredData = data
     if(data !== undefined && data.length > 0){
         filteredData = data.filter((element) => {
+            if(allTasks === false && element.id !== 19  && element.id !== 20  && element.id !== 32){
+                return false;
+            }
             if (search === "") {
                 return true;
             }
@@ -266,11 +291,11 @@ function Dashboard({user, setUser}) {
                     <div className="card">
                         {
                             showChat ?
-                            <Chat currentUser={allUserData} userId={showChat} chats={chats} users={users} style={{height: `${height-5}vh`}} />:null
+                            <Chat currentUser={allUserData} userId={showChat} followedUsers={followedUsers} chats={chats} users={users} style={{height: `${height-5}vh`}} />:null
                         }
                         {
                             showElement ?
-                            <ElementView id={showElement} data={filteredData} users={users}/> :null
+                            <ElementView currentUser={allUserData} id={showElement} data={filteredData} users={users}/> :null
                         }
                     </div>
                 }
@@ -292,7 +317,15 @@ function Dashboard({user, setUser}) {
                     <div className='col'>
 
                         <div className='card'>
-                            <h5 className='card-header'>Elements</h5>
+                            <div className='card-header'>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                    <h5 className=''>Elements</h5>
+                                    <div className='d-flex gap-2'>
+                                        <Button className={'btn btn-' + (allTasks ? "primary" : "secondary")} onClick={() => {setAllTasks(!allTasks)}}>All</Button>
+                                        <Button className={'btn btn-' + (!allTasks ? "primary" : "secondary")} onClick={() => {setAllTasks(!allTasks)}}>Followed</Button>
+                                    </div>
+                                </div>
+                            </div>
                             <div className='card-body'>
                                 <div className={`overflow-auto`} style={{height: `${height}vh`}}>
                                 <ElementList data={filteredData} users={users} setShowChat={setShowChat} showElement={showElement} setShowElement={setShowElement}/>
@@ -324,7 +357,7 @@ function Dashboard({user, setUser}) {
                                 <div className='card'>
                                     <h5 className='card-header'>Element</h5>
                                     <div className='card-body' style={{height: `100%`}}>
-                                        <ElementView id={showElement} data={filteredData} users={users}/> 
+                                        <ElementView currentUser={allUserData} id={showElement} data={filteredData} users={users}/> 
                                     </div>
                                 </div>
                                 :null

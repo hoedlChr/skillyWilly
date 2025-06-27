@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
 
-function ElementView({id, data, users}) {
+function ElementView({id, data, users, currentUser}) {
     const [title, setTitle] = useState("");
     const [name, setName] = useState("");
     const [ort, setOrt] = useState("");
     const [description, setDescription] = useState("");
     const [created, setCreated] = useState("");
+
     const [likeCount, setLikeCount] = useState("");
+    const [liked, setLiked] = useState(false);
+
     useEffect(()=>{
         let element = data.find((element) => element.id === id);
         if (!element) {
@@ -33,22 +36,75 @@ function ElementView({id, data, users}) {
             if(data.likeCount !== undefined && data.likeCount !== null && data.likeCount > 0){
                 setLikeCount(data.likeCount);
             }
+            if(data.userIds !== undefined && data.userIds !== null && data.userIds.includes(currentUser.id)){
+                setLiked(true);
+            }
         })
         .catch((err) => {
             console.log(err);
         });
-    },[id])
+    },[id, likeCount])
+
+    const like = () => {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+        "userId": currentUser.id,
+        "skillId": id
+        });
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch("http://localhost:8080/api/like-skills/like", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {setLikeCount(likeCount+1);})
+        .catch((error) => console.error(error));
+    }
+
+    const unLike = () => {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+        "userId": currentUser.id,
+        "skillId": id
+        });
+
+        const requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch("http://localhost:8080/api/like-skills/like", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {setLikeCount(likeCount+1);})
+        .catch((error) => console.error(error));
+    }
 
     return (
         <div className='mt-1'>
             <div className="d-flex justify-content-between align-items-center">
                 <h2 className="mb-0">{title}</h2>
-                <Button className='btn btn-primary' style={{ background: 'initial', border: "none", padding: "0px", color: 'black' }} onClick={() => {
-                    window.location.href = "/dashboard";
-                }}>
-                    <i className="bi bi-hand-thumbs-up"></i>
-                    <small className='ms-1'>{likeCount > 0 ? likeCount : "Like"}</small>
-                </Button>
+                {
+                    !liked ?
+                    <Button className='btn btn-primary text-success' style={{ background: 'initial', border: "none", padding: "0px", color: 'black' }} onClick={() => {like()}}>
+                        <i className="bi bi-hand-thumbs-up"></i>
+                        <small className='ms-1'>{likeCount > 0 ? likeCount : "Like"}</small>
+                    </Button>
+                    :
+                    <Button className='btn btn-primary text-danger' style={{ background: 'initial', border: "none", padding: "0px", color: 'black' }} onClick={() => {unLike()}}>
+                        <i className="bi bi-hand-thumbs-down"></i>
+                        <small className='ms-1'>{likeCount > 0 ? likeCount : "Like"}</small>
+                    </Button>
+                }
             </div>
             <Button className='btn clickable' style={{ background: 'initial', border: "none", padding: "0px", color: 'black' }} onClick={() => {
                 window.location.href = `/chat/${users[id].id}`;

@@ -13,7 +13,7 @@ function PasswordForgotten() {
 
     return (
         <div className='w-50 m-auto mt-5'>
-            <h1>Create Account</h1>
+            <h1>Password Forgotten</h1>
             <StandardInputField 
                 label="Email Address"
                 id={"email"}
