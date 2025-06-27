@@ -21,6 +21,7 @@ function Navbar({text, search, setSearch, setShowCreateSkill, setShowElementsOnM
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
             }
+            window.location.href = "/login";
             return res.json();
         })
         .then((data) => {
