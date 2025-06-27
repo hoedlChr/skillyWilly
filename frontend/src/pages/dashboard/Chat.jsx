@@ -4,13 +4,16 @@ import Button from "../../components/Button";
 
 function Chat({ currentUser, userId, users, chats, style, followedUsers }) {
     const [message, setMessage] = useState("");
+    const [followed, setFollowed] = useState(false);
     let name = users[userId].username;
     let title = "";
 
     let messages = [];
+    
     let sortedChats = [...chats].sort((a, b) => {
         return new Date(a.created) - new Date(b.created);
     });
+
     sortedChats.forEach((chat, index) => {
         const t = new Date(chat.created);
         let time = t.toLocaleTimeString([], {
@@ -43,6 +46,14 @@ function Chat({ currentUser, userId, users, chats, style, followedUsers }) {
             );
         }
     });
+
+    useEffect(() => {
+        if (followedUsers.includes(userId)) {
+            setFollowed(true);
+        } else {
+            setFollowed(false);
+        }
+    }, [followedUsers, userId]);
 
     const sendMessage = () => {
         const formdata = message.trim();
@@ -83,7 +94,7 @@ function Chat({ currentUser, userId, users, chats, style, followedUsers }) {
 
         fetch("/api/followers", requestOptions)
             .then((response) => response.text())
-            .then((result) => console.log(result))
+            .then((result) => setFollowed(true))
             .catch((error) => console.error(error));
     };
 
@@ -103,10 +114,10 @@ function Chat({ currentUser, userId, users, chats, style, followedUsers }) {
             redirect: "follow",
         };
 
-        fetch(`/api/followers`, requestOptions)
+        fetch(`/api/followers?followerId=${from}&followingId=${to}`, requestOptions)
             .then((response) => response.text())
             .then((result) => {
-                console.log(result);
+              setFollowed(false);
             })
             .catch((error) => console.error(error));
     };
@@ -118,7 +129,7 @@ function Chat({ currentUser, userId, users, chats, style, followedUsers }) {
                     <h2>{name}</h2>
                 </div>
                 <div className="col-auto">
-                    {!followedUsers.includes(userId) ? (
+                    {!followed ? (
                         <Button
                             className="btn btn-success"
                             onClick={() => followUser()}
