@@ -10,6 +10,26 @@ function PasswordForgotten() {
 
     },[])
 
+    const sendMail = () => {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "email": email
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        fetch("/api/users/reset-password", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    }
 
     return (
         <div className='w-50 m-auto mt-5'>
@@ -26,7 +46,7 @@ function PasswordForgotten() {
             />
 
             <div className='d-grid'>
-                <Button onClick={() => {console.log("Login clicked")}} className="btn-primary my-2">Reset Password</Button>
+                <Button onClick={() => {sendMail()}} className="btn-primary my-2">Reset Password</Button>
                 <Button onClick={() => {window.history.back()}} className="btn btn-danger my-2">Cancel</Button>
             </div>
         </div>
