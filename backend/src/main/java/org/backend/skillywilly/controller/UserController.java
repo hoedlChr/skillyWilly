@@ -334,4 +334,39 @@ public class UserController {
             return createExceptionResponse(e);
         }
     }
+
+    @PostMapping(value = "/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        if (email == null || email.isBlank()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("E-Mail darf nicht leer sein");
+        }
+
+        return userService.findByEmail(email)
+                .map(user -> {
+                    String rawPw = UUID.randomUUID().toString().substring(0, 8);
+                    user.setPassword(passwordService.hashPassword(rawPw));
+                    userService.save(user);
+
+                    String subject = "Ihr neues Passwort";
+                    String text = String.format(
+                            "Hallo %s,%n%n" +
+                                    "Ihr Passwort wurde zurückgesetzt. Ihr neues Passwort lautet:%n%n" +
+                                    "%s%n%n" +
+                                    "Bitte ändern Sie es nach dem ersten Login.%n%n" +
+                                    "Viele Grüße,%nIhr Support-Team",
+                            user.getUsername(), rawPw
+                    );
+                    emailService.sendSimpleMessage(email, subject, text);
+
+                    return new ResponseEntity<>(email, HttpStatus.OK);
+                })
+                .orElseGet(() ->
+                        ResponseEntity
+                                .status(HttpStatus.NOT_FOUND)
+                                .body("User mit dieser E-Mail nicht gefunden")
+                );
+    }
 }

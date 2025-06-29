@@ -17,7 +17,7 @@ public class EmailService {
 
     @Value("${app.base-url}")
     private String baseUrl;
-    
+
     public void sendVerificationEmail(String email, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
@@ -35,6 +35,14 @@ public class EmailService {
                 "Das SkillWilly-Team";
 
         message.setText(emailText);
+        mailSender.send(message);
+    }
+
+    public void sendSimpleMessage(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
         mailSender.send(message);
     }
 }
